@@ -1,3 +1,0 @@
-/Users/xun/Documents/GitHub/CSCI-576-Multimedia-System-Design/ContentBrowser/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/xun/Documents/GitHub/CSCI-576-Multimedia-System-Design/ContentBrowser/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/xun/Documents/GitHub/CSCI-576-Multimedia-System-Design/ContentBrowser/cmake-build-debug/CMakeFiles/ContentBrowser.dir
