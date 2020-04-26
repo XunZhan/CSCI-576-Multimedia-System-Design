@@ -1,0 +1,33 @@
+# clion
+cmake-build-debug/
+CMakeFiles/
+*.cmake
+CMakeCache.txt
+Makefile
+# Binary
+Main
+
+# cpp
+*.cbp
+
+# mac
+.DS_Store
+
+
+# java
+.idea/
+*.class
+
+# media
+*.jpg
+*.gif
+*.png
+
+*.rgb
+
+*.mp4
+*.wav
+*.avi
+
+
+
