@@ -21,7 +21,7 @@ public class ShowImg {
   public static void main(String[] args) {
     ShowImg display = new ShowImg(args);
   }
-  
+
   // Member Variables
   private static final int width = 352;
   private static final int height = 288;
@@ -52,7 +52,7 @@ public class ShowImg {
       int frameLen = (int) (width * height * 3); // rgb
       byte[] bytes = new byte[frameLen];
       raf.read(bytes);
-      
+
       int idx = 0;
       for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
