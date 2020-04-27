@@ -116,18 +116,24 @@ public class VideoPlayer {
   // audio methods
   // -------------
   private void playAudio() {
-    audioClip.setMicrosecondPosition(currentClipLoc);
-    audioClip.start();
+    if (audioClip != null) {
+      audioClip.setMicrosecondPosition(currentClipLoc);
+      audioClip.start();
+    }
   }
 
   private void pauseAudio() {
-    currentClipLoc = audioClip.getMicrosecondPosition();
-    audioClip.stop();
+    if (audioClip != null) {
+      currentClipLoc = audioClip.getMicrosecondPosition();
+      audioClip.stop();
+    }
   }
 
   private void stopAudio() {
-    currentClipLoc = 0;
-    audioClip.stop();
+    if (audioClip != null) {
+      currentClipLoc = 0;
+      audioClip.stop();
+    }
   }
 
 
