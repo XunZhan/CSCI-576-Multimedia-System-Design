@@ -124,7 +124,11 @@ public class VideoPlayer {
 
   private void pauseAudio() {
     if (audioClip != null) {
-      currentClipLoc = audioClip.getMicrosecondPosition();
+      // currentClipLoc = audioClip.getMicrosecondPosition();
+      // correction
+      long microSecondInterval = Constants.MILLISECOND_INTERVAL * 1000 + Constants.NANOSECOND_INTERVAL / 1000;
+      currentClipLoc = microSecondInterval * currentFrame;
+
       audioClip.stop();
     }
   }
