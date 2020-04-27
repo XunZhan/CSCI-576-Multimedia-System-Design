@@ -18,6 +18,7 @@ Main
 .idea/
 *.iml
 *.class
+out/
 
 # media
 *.jpg
