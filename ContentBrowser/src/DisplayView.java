@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,6 +45,9 @@ public class DisplayView extends JFrame {
     }
   }
 
+  private JDialog dialog;
+  private JLabel dialogLabel;
+
   private JLabel soundLabel;
   private JLabel frameLabel;
   private JLabel displayLabel;
@@ -60,6 +64,7 @@ public class DisplayView extends JFrame {
   private Image pauseImage;
   private Image stopImage;
   private Image soundImage;
+  private Image dialogImage;
 
   // constructor
   public DisplayView() {
@@ -118,7 +123,6 @@ public class DisplayView extends JFrame {
 
     synopsisPanel.setBackground(Color.BLACK);
 
-
     // Add
     mainPanel.add(displayPanel, BorderLayout.NORTH);
     mainPanel.add(controlPanel, BorderLayout.CENTER);
@@ -128,6 +132,8 @@ public class DisplayView extends JFrame {
 
     pack();
     setVisible(true);
+
+    showDialog();
   }
 
   private void initResources() {
@@ -137,6 +143,7 @@ public class DisplayView extends JFrame {
       pauseImage = ImageIO.read(new File("resources/pause.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH);
       stopImage = ImageIO.read(new File("resources/stop.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH);
       soundImage = ImageIO.read(new File("resources/sound.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH);
+      dialogImage = ImageIO.read(new File("resources/dialog.png")).getScaledInstance(Constants.DIALOG_ICON_SIZE, Constants.DIALOG_ICON_SIZE, Image.SCALE_SMOOTH);
     } catch (Exception e) {
       System.out.println("[DisplayView] Button Icon Exception.");
     }
@@ -198,6 +205,27 @@ public class DisplayView extends JFrame {
     controlPanel.add(soundSlider);
   }
 
+  private void showDialog() {
+    dialog = new JDialog(this, "Loading", false);
+    dialog.setLocationRelativeTo(this);
+    dialog.setLocation(540, 370);  // mysterious values
+    dialog.setAlwaysOnTop(true);
+    dialog.setSize(Constants.DIALOG_WIDTH, Constants.DIALOG_HEIGHT);
+    dialog.setResizable(false);
+    dialog.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+    JLabel iconLabel = new JLabel();
+    // iconLabel.setOpaque(true);
+    // iconLabel.setBackground(Color.orange);
+    iconLabel.setIcon(new ImageIcon(dialogImage));
+    dialogLabel = new JLabel();
+    // dialogLabel.setOpaque(true);
+    // dialogLabel.setBackground(Color.GRAY);
+    dialog.add(iconLabel);
+    dialog.add(dialogLabel);
+
+    dialog.setVisible(true);
+  }
+
 
   public void initListener(BrowserController controller) {
     // Button
@@ -244,6 +272,18 @@ public class DisplayView extends JFrame {
   public void setProgressBarRange(int min, int max) {
     progressBar.setMinimum(min);
     progressBar.setMaximum(max);
+  }
+
+
+
+  // Dialog
+  // ------
+  public JLabel getDialogLabel() {
+    return dialogLabel;
+  }
+
+  public void dismissDialog() {
+    dialog.dispose();
   }
 
 }

@@ -31,6 +31,10 @@ public class Constants {
   public final static int SLIDER_WIDTH = 130;
   public final static int SLIDER_HEIGHT = 20;
 
+  public final static int DIALOG_WIDTH = 300;
+  public final static int DIALOG_HEIGHT = 150;
+  public final static int DIALOG_ICON_SIZE = 80;
+
   public final static String VIDEO_DIR = "/video";
   public final static String AUDIO_FILE_PATH = "/audio/sound.wav";
   public final static String FRAME_FILE_PREFIX = "image-";

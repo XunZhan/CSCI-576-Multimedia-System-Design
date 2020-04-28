@@ -87,7 +87,9 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        view.showImg(model.frameList.get(currentFrame));
+        if (model.frameList != null && model.frameList.size() > 0) {
+          view.showImg(model.frameList.get(currentFrame));
+        }
       }
     });
   }
