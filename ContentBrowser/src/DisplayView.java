@@ -187,8 +187,6 @@ public class DisplayView extends JFrame {
     soundSlider = new JSlider(0, 100);
     soundSlider.setUI(new BasicSliderUI(soundSlider));
     soundSlider.setPreferredSize(sliderDimension);
-    // soundSlider.setOpaque(true);
-    // soundSlider.setBackground(Color.LIGHT_GRAY);
     soundSlider.setValue(100);
 
     // add

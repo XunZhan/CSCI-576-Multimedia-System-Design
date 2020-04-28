@@ -134,6 +134,27 @@ public class VideoPlayer {
 
   // frame update methods
   // --------------------
+  public void setCurrentFrame(long currentFrame) {
+    System.out.println("[VideoPlayer] CurrentFrame Updated (From 1): " + (currentFrame + 1));
+    this.currentFrame = currentFrame;
+    pauseAudio();
+    updateFrameRelatedViews();
+
+    if (state == PlayerState.STOP || state == PlayerState.PAUSE) {
+      if (currentFrame == 0) {
+        state = PlayerState.STOP;
+      } else if (currentFrame == numFrame - 1) {
+        state = PlayerState.STOP;
+        stopAudio();
+        this.currentFrame = numFrame;
+      } else {
+        state = PlayerState.PAUSE;
+      }
+    } else {
+      playAudio();
+    }
+  }
+
   private void updateFrameRelatedViews() {
     controller.updateFrameInView((int) currentFrame);
     controller.updateFrameLabelValues((int) currentFrame, (int) numFrame);
@@ -172,5 +193,12 @@ public class VideoPlayer {
       FloatControl gainControl = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
       gainControl.setValue(20f * (float) Math.log10((float) level / (float) 100));
     }
+  }
+
+
+  // getter
+  // ------
+  public long getNumFrame() {
+    return numFrame;
   }
 }

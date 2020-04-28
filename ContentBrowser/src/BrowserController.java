@@ -3,6 +3,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -50,8 +51,23 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
   }
 
   @Override
-  public void mouseClicked(MouseEvent e) {
-
+  public void mousePressed(MouseEvent e) {
+    if (e.getSource().getClass() == JProgressBar.class) {
+      // progressBar is clicked
+      JProgressBar progressBar = (JProgressBar) e.getSource();
+      // System.out.println(e.getX() + " / " + progressBar.getWidth());
+      // 0 ~ 399
+      // 0 ~ 550
+      float percentage = (float) e.getX() / (float) progressBar.getWidth();
+      int newFrame = (int) (percentage * (float) player.getNumFrame());
+      // System.out.println(newFrame);
+      // it has been tested that it won't exceed the maximum (just in case)
+      newFrame = Math.min(newFrame, (int) player.getNumFrame());
+      player.setCurrentFrame(newFrame);
+    } else {
+      // synopsis image is clicked
+      System.out.println("synopsis image clicked");
+    }
   }
 
   // stop button
@@ -101,16 +117,6 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       public void run() {
         int currentValue = currentFrame + 1;
         view.setProgressBarValue(currentValue);
-        // if (currentValue == 1) {
-        //   view.setProgressBarValue(0);
-        // } else {
-        //   float fraction = (float) currentValue / (float) totalNumFrame;  // 400 / 400
-        //   view.setProgressBarValue((int) (fraction * 100.0f));
-        // }
-        // if (currentFrame >= total - 1)
-        // float fraction = (float) currentFrame / (float) total;
-        // value = fraction * 100;
-        // view.setProgressBarValue(value);
       }
     });
   }
@@ -145,7 +151,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
   }
 
   @Override
-  public void mousePressed(MouseEvent e) {
+  public void mouseClicked(MouseEvent e) {
 
   }
 }
