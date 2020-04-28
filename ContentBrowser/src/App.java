@@ -9,11 +9,16 @@ import javax.swing.SwingUtilities;
 
 public class App {
 
-  private static DisplayView displayView;
-  private static Model model;
-
   // main
   public static void main(String[] args) {
+    new App();
+  }
+
+  private DisplayView displayView;
+  private Model model;
+
+  public App() {
+
     String directory = "./";  // path to the folder
     System.out.println("[App] Directory: " + directory);
 
@@ -44,20 +49,19 @@ public class App {
     // Model
     model = new Model(frameList);
 
-    // VideoPlayer
+    // VideoPlayer & Controller
     VideoPlayer player = new VideoPlayer();
+    BrowserController controller = new BrowserController(model, displayView);
+
+    player.setController(controller);
     player.setDataSource(frameList, clip);
 
-    // Controller
-    BrowserController controller = new BrowserController(model, displayView);
     controller.setPlayer(player);
-    controller.init();
+    // controller.init();
 
-    // Relationship
     displayView.initListener(controller);
-    player.setController(controller);
 
-    System.out.println("[App] Finished.");
+    System.out.println("[App] Initialization Finished.");
   }
 
 }

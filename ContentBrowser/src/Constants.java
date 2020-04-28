@@ -4,10 +4,32 @@
  */
 
 public class Constants {
-  public final static int WINDOW_WIDTH = 500;
-  public final static int WINDOW_HEIGHT = 450;
+  public final static int WINDOW_WIDTH = 900;
+  public final static int WINDOW_HEIGHT = 548;
+
+  public final static int DISPLAY_WIDTH = WINDOW_WIDTH;
+  public final static int DISPLAY_HEIGHT = 380;
+
+  public final static int SYNOPSIS_WIDTH = WINDOW_WIDTH;
+  public final static int SYNOPSIS_HEIGHT = 100;
+
+  public final static int CONTROL_WIDTH = WINDOW_WIDTH;
+  public final static int CONTROL_HEIGHT = WINDOW_HEIGHT - DISPLAY_HEIGHT - SYNOPSIS_HEIGHT;
+
   public final static int IMAGE_WIDTH = 352;
   public final static int IMAGE_HEIGHT = 288;
+
+  public final static int BUTTON_SIZE = 27;
+  public final static int BUTTON_ICON_SIZE = BUTTON_SIZE - 10;
+
+  public final static int FRAME_LABEL_WIDTH = 70;
+  public final static int FRAME_LABEL_HEIGHT = 20;
+
+  public final static int PROGRESSBAR_WIDTH = 550;
+  public final static int PROGRESSBAR_HEIGHT = 10;
+
+  public final static int SLIDER_WIDTH = 130;
+  public final static int SLIDER_HEIGHT = 20;
 
   public final static String VIDEO_DIR = "/video";
   public final static String AUDIO_FILE_PATH = "/audio/sound.wav";

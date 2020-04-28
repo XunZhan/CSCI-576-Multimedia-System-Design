@@ -2,9 +2,10 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 enum PlayerState {
-  PAUSE, PLAYING
+  STOP, PAUSE, PLAYING
 }
 
 
@@ -19,7 +20,7 @@ public class VideoPlayer {
   private long currentFrame = 0;
   private long currentClipLoc = 0;
 
-  public PlayerState state = PlayerState.PAUSE;
+  public PlayerState state = PlayerState.STOP;
 
   private BrowserController controller;
 
@@ -34,14 +35,26 @@ public class VideoPlayer {
 
     numFrame = list.size();
     clipLength = clip.getMicrosecondLength();
+
+    // update frame label
+    controller.setupProgressBarRange((int) numFrame);
+    updateFrameRelatedViews();
   }
 
   public void setController(BrowserController controller) {
     this.controller = controller;
   }
 
+
+  // control methods
+  // ---------------
   public void play() {
     System.out.println("[VideoPlayer] Playing...");
+
+    // reset the currentFrame to 0 (it happens when it automatically reaches the end)
+    if (currentFrame >= numFrame) {
+      currentFrame = 0;
+    }
 
     // create a new thread to play video
     Thread thread = new Thread(new Runnable() {
@@ -59,15 +72,21 @@ public class VideoPlayer {
           // for error calculation and correction
           long t_start = System.nanoTime();
 
-          // test if paused
-          if (state == PlayerState.PAUSE) {
-            // save some stuff
-            //
-            return;  // stop the thread
+          if (state == PlayerState.STOP) {
+            // test if stopped
+            stopAudio();
+            currentFrame = 0;
+            updateFrameRelatedViews();
+            return;
+          } else if (state == PlayerState.PAUSE) {
+            // test if paused
+            pauseAudio();
+            updateFrameRelatedViews();
+            return;
+          } else {
+            // continue
+            updateFrameRelatedViews();
           }
-
-          // update UI
-          controller.updateFrameInView((int)currentFrame);
 
           long t_end = System.nanoTime();
 
@@ -87,9 +106,8 @@ public class VideoPlayer {
         }
 
         // end of the video
-        state = PlayerState.PAUSE;
+        state = PlayerState.STOP;
         stopAudio();
-        currentFrame = 0;
         controller.playerStopNotification();
       }
     }, "VideoThread");
@@ -98,19 +116,28 @@ public class VideoPlayer {
   }
 
   public void pause() {
-    System.out.println("[VideoPlayer] Pause.");
+    System.out.println("[VideoPlayer] Pause!");
 
     state = PlayerState.PAUSE;
-    pauseAudio();
   }
 
   public void stop() {
-    System.out.println("[VideoPlayer] Stop.");
+    System.out.println("[VideoPlayer] Stop!");
+    state = PlayerState.STOP;
+    // if the current state is paused or stopped, we need to do it by ourselves
+    if (state == PlayerState.PAUSE || state == PlayerState.STOP) {
+      currentFrame = 0;
+      stopAudio();
+      updateFrameRelatedViews();
+    }
+  }
 
-    state = PlayerState.PAUSE;
-    stopAudio();
-    currentFrame = 0;
-    controller.updateFrameInView(0);
+  // frame update methods
+  // --------------------
+  private void updateFrameRelatedViews() {
+    controller.updateFrameInView((int) currentFrame);
+    controller.updateFrameLabelValues((int) currentFrame, (int) numFrame);
+    controller.updateProgressBarValue((int) currentFrame);
   }
 
   // audio methods
@@ -140,18 +167,10 @@ public class VideoPlayer {
     }
   }
 
-
-  // getter
-  // ------
-  public long getNumFrame() {
-    return numFrame;
-  }
-
-  public long getClipLength() {
-    return getClipLength();
-  }
-
-  public long getCurrentFrame() {
-    return currentFrame;
+  public void setVolume(int level) {
+    if (audioClip != null) {
+      FloatControl gainControl = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
+      gainControl.setValue(20f * (float) Math.log10((float) level / (float) 100));
+    }
   }
 }

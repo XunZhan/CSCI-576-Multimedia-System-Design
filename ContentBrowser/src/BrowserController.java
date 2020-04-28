@@ -1,7 +1,14 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class BrowserController implements ActionListener {
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+public class BrowserController implements ActionListener, ChangeListener, MouseListener {
 
   private DisplayView view;
   private Model model;
@@ -17,42 +24,128 @@ public class BrowserController implements ActionListener {
     this.player = player;
   }
 
-  public void init() {
-    updateFrameInView(0);
-  }
-
+  // listener
+  // --------
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand() == "PlayButton") {
-      System.out.println("[BrowserController] PlayButton Clicked");
-
-      if (player.state == PlayerState.PAUSE) {
-
+      if (player.state == PlayerState.STOP || player.state == player.state.PAUSE) {
         player.play();
-
-        view.playButton.setText("Pause");
-
-      } else {  // PLAYING
-
+        view.setPlayButtonState(1);
+      } else {
         player.pause();
-
-        view.playButton.setText("Play");
-
+        view.setPlayButtonState(0);
       }
 
     } else if (e.getActionCommand() == "StopButton") {
-      System.out.println("[BrowserController] StopButton Clicked");
-
       player.stop();
-      view.playButton.setText("Play");
+      view.setPlayButtonState(0);
     }
   }
 
-  public void updateFrameInView(int currentFrame) {
-    view.showImg(model.frameList.get(currentFrame));
+  @Override
+  public void stateChanged(ChangeEvent e) {
+    JSlider slider = (JSlider) e.getSource();
+    player.setVolume(slider.getValue());
   }
 
+  @Override
+  public void mouseClicked(MouseEvent e) {
+
+  }
+
+  // stop button
+  // -----------
   public void playerStopNotification() {
-    view.playButton.setText("Play");
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        view.setPlayButtonState(0);
+      }
+    });
+  }
+
+  // frame
+  // -----
+  public void updateFrameInView(int currentFrame) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        view.showImg(model.frameList.get(currentFrame));
+      }
+    });
+  }
+
+  public void updateFrameLabelValues(int currentFrame, int totalNumFrame) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        // convert from index to number (add 1)
+        view.setFrameLabelValues(currentFrame + 1, totalNumFrame);
+      }
+    });
+  }
+
+  public void setupProgressBarRange(int totalNumFrame) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        view.setProgressBarRange(1, totalNumFrame);
+      }
+    });
+  }
+
+  public void updateProgressBarValue(int currentFrame) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        int currentValue = currentFrame + 1;
+        view.setProgressBarValue(currentValue);
+        // if (currentValue == 1) {
+        //   view.setProgressBarValue(0);
+        // } else {
+        //   float fraction = (float) currentValue / (float) totalNumFrame;  // 400 / 400
+        //   view.setProgressBarValue((int) (fraction * 100.0f));
+        // }
+        // if (currentFrame >= total - 1)
+        // float fraction = (float) currentFrame / (float) total;
+        // value = fraction * 100;
+        // view.setProgressBarValue(value);
+      }
+    });
+  }
+
+  // sound
+  // -----
+  public void updateSoundSliderValue(int level) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        view.setSoundSliderValue(level);
+      }
+    });
+  }
+
+
+  // no use
+  // ------
+  @Override
+  public void mouseEntered(MouseEvent e) {
+
+  }
+
+  @Override
+  public void mouseExited(MouseEvent e) {
+
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+
+  }
+
+  @Override
+  public void mousePressed(MouseEvent e) {
+
   }
 }
