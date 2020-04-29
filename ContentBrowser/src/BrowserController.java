@@ -45,6 +45,10 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       if (player.state == PlayerState.STOP || player.state == player.state.PAUSE) {
         player.play();
         view.setPlayButtonState(1);
+        if (player.state == PlayerState.STOP) {
+          // update selected rect
+          view.setSynopsisLabelCurrentSelectedIndex(-1);
+        }
       } else {
         player.pause();
         view.setPlayButtonState(0);
@@ -52,9 +56,9 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
     } else if (e.getActionCommand() == "StopButton") {
       player.stop();
       view.setPlayButtonState(0);
+      // update selected rect
+      view.setSynopsisLabelCurrentSelectedIndex(-1);
     }
-    // update selected rect
-    view.setSynopsisLabelCurrentSelectedIndex(-1);
   }
 
   @Override
