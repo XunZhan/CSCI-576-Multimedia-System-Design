@@ -36,7 +36,10 @@ public class Constants {
   public final static int DIALOG_ICON_SIZE = 80;
 
   public final static String VIDEO_DIR = "/video";
+  public final static String IMAGE_DIR = "/image";
   public final static String AUDIO_FILE_PATH = "/audio/sound.wav";
+  public final static String SYNOPSIS_FILE = "/synopsis.jpg";
+  public final static String META_FILE = "/synopsis.metafile";
   public final static String FRAME_FILE_PREFIX = "image-";
 
   public final static double FPS = 29.94;

@@ -29,11 +29,11 @@ public class App {
     // Parser
     Parser parser = new Parser(directory);
     parser.setDialogLabel(displayView.getDialogLabel());
-    parser.loadSynopsis();
-    parser.loadMetafile();
+    BufferedImage synopsisImg = parser.loadSynopsis();
+    MetaData metaData = parser.loadMetafile();
     Clip clip = parser.loadAudio();
     List<BufferedImage> frameList = parser.loadFrames();
-    List<BufferedImage> imageList = parser.loadImages();
+    List<BufferedImage> imageList = parser.loadImages(metaData.getImageFileNameList());
 
     displayView.dismissDialog();
 
