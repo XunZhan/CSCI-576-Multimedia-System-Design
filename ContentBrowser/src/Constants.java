@@ -1,6 +1,22 @@
 import java.awt.Color;
 
 public class Constants {
+  // basic info
+  // ----------
+  public final static String VIDEO_DIR = "/video";
+  public final static String IMAGE_DIR = "/image";
+  public final static String AUDIO_FILE_PATH = "/audio/sound.wav";
+  public final static String SYNOPSIS_FILE = "/synopsis.jpg";
+  public final static String META_FILE = "/synopsis.metafile";
+  public final static String FRAME_FILE_PREFIX = "image-";
+
+  public final static double FPS = 29.94;
+  public final static int MILLISECOND_INTERVAL = (int) ((double) 1 / FPS * 1000.0);  // miliseconds
+  public final static int NANOSECOND_INTERVAL = (int) (((double) 1 / FPS * 1000.0 - 33.0) * 1000 * 1000);  // nanoseconds
+
+  // UI stuff
+  // --------
+
   // window
   public final static int WINDOW_WIDTH = 900;
   public final static int WINDOW_HEIGHT = 568;
@@ -19,7 +35,7 @@ public class Constants {
 
   public final static int SYNOPSIS_RECT_OFFSET = 20;
   public final static int SYNOPSIS_RECT_SIZE = 15;
-  public final static int SYNOPSIS_RECT_CORNER = 5;
+  public final static int SYNOPSIS_RECT_CORNER = 7;
 
   public final static Color SYNOPSIS_FRAME_RECT_COLOR = new Color(52, 143, 149);
   public final static Color SYNOPSIS_IMAGE_RECT_COLOR = new Color(73, 123, 55);
@@ -32,30 +48,25 @@ public class Constants {
   public final static int IMAGE_WIDTH = 352;
   public final static int IMAGE_HEIGHT = 288;
 
+  // button
   public final static int BUTTON_SIZE = 27;
   public final static int BUTTON_ICON_SIZE = BUTTON_SIZE - 10;
 
+  // frame label
   public final static int FRAME_LABEL_WIDTH = 70;
   public final static int FRAME_LABEL_HEIGHT = 20;
 
+  // progress bar
   public final static int PROGRESSBAR_WIDTH = 550;
   public final static int PROGRESSBAR_HEIGHT = 10;
+  public final static Color PROGRESSBAR_COLOR = new Color(202, 145, 52);
 
+  // sound slider
   public final static int SLIDER_WIDTH = 130;
   public final static int SLIDER_HEIGHT = 20;
 
+  // dialog
   public final static int DIALOG_WIDTH = 300;
   public final static int DIALOG_HEIGHT = 150;
   public final static int DIALOG_ICON_SIZE = 80;
-
-  public final static String VIDEO_DIR = "/video";
-  public final static String IMAGE_DIR = "/image";
-  public final static String AUDIO_FILE_PATH = "/audio/sound.wav";
-  public final static String SYNOPSIS_FILE = "/synopsis.jpg";
-  public final static String META_FILE = "/synopsis.metafile";
-  public final static String FRAME_FILE_PREFIX = "image-";
-
-  public final static double FPS = 29.94;
-  public final static int MILLISECOND_INTERVAL = (int) ((double) 1 / FPS * 1000.0);  // miliseconds
-  public final static int NANOSECOND_INTERVAL = (int) (((double) 1 / FPS * 1000.0 - 33.0) * 1000 * 1000);  // nanoseconds
 }

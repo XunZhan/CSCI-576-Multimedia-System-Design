@@ -84,7 +84,9 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       if (item.getType() == ItemType.FRAME) {
         player.setCurrentFrame(item.getIndex());
       } else {  // Image
-
+        player.stop();
+        view.setPlayButtonState(0);
+        showImageInView(item.getIndex());
       }
     }
   }
@@ -152,6 +154,20 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       @Override
       public void run() {
         view.setSoundSliderValue(level);
+      }
+    });
+  }
+
+
+  // image
+  // -----
+  public void showImageInView(int imgIndex) {
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        if (model.imageList != null && model.imageList.size() > 0) {
+          view.showImg(model.imageList.get(imgIndex));
+        }
       }
     });
   }

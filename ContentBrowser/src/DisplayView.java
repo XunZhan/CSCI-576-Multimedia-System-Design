@@ -100,7 +100,7 @@ public class DisplayView extends JFrame {
           g2d.fillRoundRect(xxRect, yyRect, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_CORNER, Constants.SYNOPSIS_RECT_CORNER);
 
           g2d.setColor(Color.WHITE);
-          g2d.drawString("I", xxText + 2, yyText);
+          g2d.drawString("I", xxText + 1, yyText);  // lmao design
         }
         x += metaData.getSynopsisSpan();
       }
@@ -256,7 +256,7 @@ public class DisplayView extends JFrame {
     Dimension barDimension = new Dimension(Constants.PROGRESSBAR_WIDTH, Constants.PROGRESSBAR_HEIGHT);
     progressBar = new JProgressBar();
     progressBar.setOpaque(true);
-    progressBar.setUI(new ProgressUI(progressBar, new Color(59, 136, 253), Color.LIGHT_GRAY));
+    progressBar.setUI(new ProgressUI(progressBar, Constants.PROGRESSBAR_COLOR, Color.LIGHT_GRAY));
     progressBar.setPreferredSize(barDimension);
     progressBar.setBorderPainted(false);
     progressBar.setStringPainted(false);
