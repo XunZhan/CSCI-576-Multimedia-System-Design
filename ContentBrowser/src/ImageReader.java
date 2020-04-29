@@ -56,8 +56,6 @@ public class ImageReader {
           imgRGB[x][y][1] = g;
           imgRGB[x][y][2] = b;
 
-          // set RGB value in a byte
-          // int pix = 0xff000000 | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
           ++idx;
         }
       }
