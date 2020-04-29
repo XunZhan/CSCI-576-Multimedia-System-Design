@@ -1,8 +1,8 @@
-/**
- * @author Junhao Wang
- * @date 04/28/2020
- */
-package PACKAGE_NAME;
+enum ItemType {
+  FRAME, IMAGE
+}
 
 public interface Item {
+  public ItemType getType();
+  public int getIndex();
 }

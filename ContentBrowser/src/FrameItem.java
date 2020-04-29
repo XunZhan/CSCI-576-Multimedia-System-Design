@@ -1,8 +1,17 @@
-/**
- * @author Junhao Wang
- * @date 04/28/2020
- */
-package PACKAGE_NAME;
 
-public class FrameItem {
+public class FrameItem implements Item {
+
+  private int index;
+
+  public FrameItem(int i) {
+    index = i;
+  }
+
+  public ItemType getType() {
+    return ItemType.FRAME;
+  }
+
+  public int getIndex() {
+    return index;
+  }
 }

@@ -1,7 +1,14 @@
-public class FrameItem implements Item {
+
+public class ImageItem implements Item {
+
   private int index;
+
+  public ImageItem(int i) {
+    index = i;
+  }
+
   public ItemType getType() {
-    return ItemType.FRAME;
+    return ItemType.IMAGE;
   }
   
   public int getIndex() {
