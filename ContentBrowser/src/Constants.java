@@ -40,6 +40,10 @@ public class Constants {
   public final static Color SYNOPSIS_FRAME_RECT_COLOR = new Color(52, 143, 149);
   public final static Color SYNOPSIS_IMAGE_RECT_COLOR = new Color(73, 123, 55);
 
+
+  public final static int SYNOPSIS_SELECTED_RECT_THICKNESS = 3;
+  public final static int SYNOPSIS_SELECTED_RECT_CORNER = 10;
+
   // control panel
   public final static int CONTROL_WIDTH = WINDOW_WIDTH;
   public final static int CONTROL_HEIGHT = WINDOW_HEIGHT - DISPLAY_HEIGHT - SYNOPSIS_HEIGHT;

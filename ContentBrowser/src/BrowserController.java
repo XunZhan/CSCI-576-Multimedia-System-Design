@@ -49,11 +49,12 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
         player.pause();
         view.setPlayButtonState(0);
       }
-
     } else if (e.getActionCommand() == "StopButton") {
       player.stop();
       view.setPlayButtonState(0);
     }
+    // update selected rect
+    view.setSynopsisLabelCurrentSelectedIndex(-1);
   }
 
   @Override
@@ -65,29 +66,30 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
   @Override
   public void mousePressed(MouseEvent e) {
     if (e.getSource().getClass() == JProgressBar.class) {
-      // progressBar is clicked
+      // progressBar is pressed
       JProgressBar progressBar = (JProgressBar) e.getSource();
-      // System.out.println(e.getX() + " / " + progressBar.getWidth());
-      // 0 ~ 399
-      // 0 ~ 550
       float percentage = (float) e.getX() / (float) progressBar.getWidth();
       int newFrame = (int) (percentage * (float) player.getNumFrame());
-      // System.out.println(newFrame);
       // it has been tested that it won't exceed the maximum (just in case)
       newFrame = Math.min(newFrame, (int) player.getNumFrame());
       player.setCurrentFrame(newFrame);
+      // update selected rect
+      view.setSynopsisLabelCurrentSelectedIndex(-1);
     } else {
-      // synopsis image is clicked
-      // System.out.println("synopsis image clicked -> " + e.getX() + " / " + label.getWidth());
+      // synopsis image is pressed
       int index = e.getX() / model.metaData.getSynopsisSpan();
       Item item = model.metaData.getItemList().get(index);
       if (item.getType() == ItemType.FRAME) {
         player.setCurrentFrame(item.getIndex());
       } else {  // Image
-        player.stop();
-        view.setPlayButtonState(0);
+        if (player.state == PlayerState.PLAYING || player.state == PlayerState.PAUSE) {
+          player.stop();
+          view.setPlayButtonState(0);
+        }
         showImageInView(item.getIndex());
       }
+      // update selected rect
+      view.setSynopsisLabelCurrentSelectedIndex(index);
     }
   }
 
@@ -166,6 +168,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       @Override
       public void run() {
         if (model.imageList != null && model.imageList.size() > 0) {
+          System.out.println("[BrowserController] Showing Image at Index: " + imgIndex);
           view.showImg(model.imageList.get(imgIndex));
         }
       }

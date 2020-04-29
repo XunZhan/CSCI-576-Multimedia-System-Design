@@ -1,3 +1,4 @@
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -60,16 +61,17 @@ public class DisplayView extends JFrame {
   private class SynopsisLabel extends JLabel {
 
     private MetaData metaData;
+    private int currentSelectedIndex = -1;
 
     @Override
     protected void paintComponent(Graphics g) {
       super.paintComponent(g);
       if (metaData != null) {
-        drawTypeString(g);
+        draw(g);
       }
     }
 
-    private void drawTypeString(Graphics g) {
+    private void draw(Graphics g) {
 
       Graphics2D g2d = (Graphics2D) g.create();
 
@@ -105,13 +107,34 @@ public class DisplayView extends JFrame {
         x += metaData.getSynopsisSpan();
       }
 
+      // draw selected rectangle
+      if (currentSelectedIndex != -1) {
+        if (metaData.getItemList().get(currentSelectedIndex).getType() == ItemType.FRAME) {
+          g2d.setColor(Constants.SYNOPSIS_FRAME_RECT_COLOR);
+        } else {
+          g2d.setColor(Constants.SYNOPSIS_IMAGE_RECT_COLOR);
+        }
+        // g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(Constants.SYNOPSIS_SELECTED_RECT_THICKNESS));
+        g2d.drawRoundRect(
+                metaData.getSynopsisSpan() * currentSelectedIndex + 1,
+                1,
+                metaData.getSynopsisSpan(),
+                metaData.getSynopsisHeight() - 3, Constants.SYNOPSIS_SELECTED_RECT_CORNER, Constants.SYNOPSIS_SELECTED_RECT_CORNER);
+      }
+
       g2d.dispose();
     }
 
     public void setMetaData(MetaData data) {
       metaData = data;
+      updateUI();
     }
 
+    public void setCurrentSelectedIndex(int index) {
+      currentSelectedIndex = index;
+      updateUI();
+    }
   }
 
   private JDialog dialog;
@@ -377,6 +400,10 @@ public class DisplayView extends JFrame {
 
   public void setSynopsisLabelMetadata(MetaData data) {
     synopsisLabel.setMetaData(data);
+  }
+
+  public void setSynopsisLabelCurrentSelectedIndex(int index) {
+    synopsisLabel.setCurrentSelectedIndex(index);
   }
 
   // Dialog
