@@ -38,7 +38,7 @@ public class App {
     displayView.dismissDialog();
 
     // Model
-    Model model = new Model(frameList);
+    Model model = new Model(frameList, imageList, metaData, synopsisImg);
 
     // VideoPlayer & Controller
     VideoPlayer player = new VideoPlayer();
@@ -48,6 +48,8 @@ public class App {
     player.setDataSource(frameList, clip);
 
     controller.setPlayer(player);
+    controller.showSynopsisImage();
+    controller.showSynopsisTypeText();
 
     displayView.initListener(controller);
 

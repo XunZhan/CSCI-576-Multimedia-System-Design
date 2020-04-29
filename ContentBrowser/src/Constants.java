@@ -1,21 +1,34 @@
-/**
- * @author Junhao Wang
- * @date 04/26/2020
- */
+import java.awt.Color;
 
 public class Constants {
+  // window
   public final static int WINDOW_WIDTH = 900;
-  public final static int WINDOW_HEIGHT = 548;
+  public final static int WINDOW_HEIGHT = 568;
 
+  // display
   public final static int DISPLAY_WIDTH = WINDOW_WIDTH;
   public final static int DISPLAY_HEIGHT = 380;
 
+  // synopsis
   public final static int SYNOPSIS_WIDTH = WINDOW_WIDTH;
   public final static int SYNOPSIS_HEIGHT = 100;
+  public final static int SYNOPSIS_HEIGHT_WITH_BAR = 120;
+  public final static int SYNOPSIS_TEXT_OFFSET_X = 16;
+  public final static int SYNOPSIS_TEXT_OFFSET_Y = 8;
+  public final static int SYNOPSIS_TEXT_SIZE = 13;
 
+  public final static int SYNOPSIS_RECT_OFFSET = 20;
+  public final static int SYNOPSIS_RECT_SIZE = 15;
+  public final static int SYNOPSIS_RECT_CORNER = 5;
+
+  public final static Color SYNOPSIS_FRAME_RECT_COLOR = new Color(52, 143, 149);
+  public final static Color SYNOPSIS_IMAGE_RECT_COLOR = new Color(73, 123, 55);
+
+  // control panel
   public final static int CONTROL_WIDTH = WINDOW_WIDTH;
   public final static int CONTROL_HEIGHT = WINDOW_HEIGHT - DISPLAY_HEIGHT - SYNOPSIS_HEIGHT;
 
+  // image
   public final static int IMAGE_WIDTH = 352;
   public final static int IMAGE_HEIGHT = 288;
 

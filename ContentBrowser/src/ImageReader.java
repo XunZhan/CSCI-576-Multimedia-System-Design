@@ -10,7 +10,7 @@ public class ImageReader {
 
   }
 
-  public BufferedImage read(String fileName) {
+  public BufferedImage read(String fileName, int width, int height) {
     // check fileName
     if (fileName == null) {
       System.out.println("[ImageReader] The file path is null.");
@@ -23,10 +23,10 @@ public class ImageReader {
       return null;
     }
 
-    int[][][] imgRGB = new int[Constants.IMAGE_WIDTH][Constants.IMAGE_HEIGHT][3];
+    int[][][] imgRGB = new int[width][height][3];
 
     try {
-      readImage(file, imgRGB);
+      readImage(file, imgRGB, width, height);
     } catch (Exception e) {
       System.out.println("[ImageReader] Something is wrong here.");
       return null;
@@ -35,12 +35,12 @@ public class ImageReader {
     return generateImg(imgRGB);
   }
 
-  private void readImage(File file, int[][][] imgRGB) throws Exception {
+  private void readImage(File file, int[][][] imgRGB, int width, int height) throws Exception {
     try {
       RandomAccessFile raf = new RandomAccessFile(file, "r");
       raf.seek(0);
 
-      int frameLen = (int) (Constants.IMAGE_WIDTH * Constants.IMAGE_HEIGHT * 3); // rgb
+      int frameLen = (int) (width * height * 3); // rgb
       byte[] bytes = new byte[frameLen];
       raf.read(bytes);
 

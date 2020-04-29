@@ -1,3 +1,5 @@
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,6 +9,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -39,10 +42,28 @@ public class Parser {
   // ------------
   public BufferedImage loadSynopsis() {
     System.out.print("[Parser] Loading Synopsis ...... ");
-    BufferedImage img = imageReader.read(directory + Constants.SYNOPSIS_FILE);
-    System.out.printf("Completed (1 synopsis).\n");
-    isSynopsisLoaded = true;
-    return img;
+    // BufferedImage img = imageReader.read(directory + Constants.SYNOPSIS_FILE);
+    try {
+      BufferedImage img = ImageIO.read(new File(directory + Constants.SYNOPSIS_FILE));
+
+      // re-scaled
+      float ratio = (float) img.getHeight() / (float) Constants.SYNOPSIS_HEIGHT;
+      Image ig = img.getScaledInstance((int) (img.getWidth() / ratio), Constants.SYNOPSIS_HEIGHT, Image.SCALE_SMOOTH);
+
+      BufferedImage scaledImg = new BufferedImage(ig.getWidth(null), ig.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+      Graphics2D graphics2D = scaledImg.createGraphics();
+      graphics2D.drawImage(ig, 0, 0, null);
+      graphics2D.dispose();
+
+      System.out.printf("Completed (1 synopsis).\n");
+      isSynopsisLoaded = true;
+      return scaledImg;
+    } catch (IOException e) {
+      System.out.printf("Completed (0 synopsis).\n");
+      System.out.println("[Parser] Exception in Loading Synopsis Image.");
+      return null;
+    }
   }
 
   // loadMetafile
@@ -93,7 +114,10 @@ public class Parser {
     // for dialog
     numImage = imageFileNameList.size();
 
-    return new MetaData(imgWidth, imgHeight, imgSpan, itemList, imageFileNameList);
+    // re-scale
+    float ratio = (float) imgHeight / (float) Constants.SYNOPSIS_HEIGHT;
+
+    return new MetaData((int) (imgWidth / ratio), Constants.SYNOPSIS_HEIGHT, (int) (imgSpan / ratio), itemList, imageFileNameList);
   }
 
   // loadAudio
@@ -142,7 +166,7 @@ public class Parser {
       }
 
       setDialogInfo(frameIndex, numFrame, 0, numImage);
-      BufferedImage img = this.imageReader.read(fileName);
+      BufferedImage img = this.imageReader.read(fileName, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
 
       videoImages.add(img);
       ++frameIndex;
@@ -169,7 +193,7 @@ public class Parser {
 
       setDialogInfo(numFrame, numFrame, i + 1, numImage);
 
-      BufferedImage img = this.imageReader.read(fileName);
+      BufferedImage img = this.imageReader.read(fileName, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
       imageList.add(img);
     }
 

@@ -3,8 +3,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RunnableScheduledFuture;
 
 import javax.imageio.ImageIO;
 
@@ -46,8 +48,19 @@ public class Main {
       read(fileArray.get(i), imgRGB, i);
     }
 
+    int[][][] outputRGB = new int[width][height][3];
+    for (int i = 0; i < width; ++i) {
+      for (int j = 0; j < height; ++j) {
+        outputRGB[i][j][0] = imgRGB[i][j][0];
+        outputRGB[i][j][1] = imgRGB[i][j][1];
+        outputRGB[i][j][2] = imgRGB[i][j][2];
+      }
+    }
+
+    blur(imgRGB, outputRGB);
+
     // generate buffered image
-    BufferedImage img = generateImg(imgRGB);
+    BufferedImage img = generateImg(outputRGB);
     try {
       File outputFile = new File("synopsis.jpg");
       ImageIO.write(img, "jpg", outputFile);
@@ -55,6 +68,9 @@ public class Main {
       System.out.println("hihi");
     }
   }
+
+
+
 
   public static void read(String fileName, int[][][] imgRGB, int index) {
 
@@ -97,6 +113,54 @@ public class Main {
       throw new FileNotFoundException();
     } catch (Exception e) {
       throw new IOException();
+    }
+  }
+
+  static List<int[]> dir = new ArrayList<>();
+
+  private static void blur(int[][][] imgRGB, int[][][] outputRGB) {
+    int lo = -3;
+    int hi = +3;
+    int size = 5;
+
+    for (int i = lo; i <= hi; ++i) {
+      for (int j = lo; j <= hi; ++j) {
+        dir.add(new int[] { i, j });
+      }
+    }
+
+    for (int x = 0; x < width; ++x) {
+      for (int y = 0; y < height; ++y) {
+        if (x != 0 && x != width - 1) {
+          if (x % WIDTH == 0) {
+            int leftX = x - size;
+            int rightX = x + size - 1;
+            for (int i = leftX; i <= rightX; ++i) {
+              for (int j = 0; j <= height - 1; ++j) {
+                int total = 0;
+                int sumR = 0;
+                int sumG = 0;
+                int sumB = 0;
+                for (int[] d : dir) {
+                  int ii = i + d[0];
+                  int jj = j + d[1];
+                  // check jj
+                  if (jj >= 0 && jj <= height - 1) {
+                    total += 1;
+                    sumR += imgRGB[ii][jj][0];
+                    sumG += imgRGB[ii][jj][1];
+                    sumB += imgRGB[ii][jj][2];
+                  }
+                }
+                // output
+                outputRGB[i][j][0] = sumR / total;
+                outputRGB[i][j][1] = sumG / total;
+                outputRGB[i][j][2] = sumB / total;
+              }
+            }
+          }
+        }
+      }
     }
   }
 

@@ -15,6 +15,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
   private Model model;
   private VideoPlayer player;
 
+
   // constructor
   public BrowserController(Model model, DisplayView view) {
     this.model = model;
@@ -24,6 +25,17 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
   public void setPlayer(VideoPlayer player) {
     this.player = player;
   }
+
+  // Synopsis
+  // --------
+  public void showSynopsisImage() {
+    view.setSynopsisImage(model.synopsisImage);
+  }
+
+  public void showSynopsisTypeText() {
+    view.setSynopsisLabelMetadata(model.metaData);
+  }
+
 
   // listener
   // --------
@@ -66,9 +78,17 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       player.setCurrentFrame(newFrame);
     } else {
       // synopsis image is clicked
-      System.out.println("synopsis image clicked");
+      // System.out.println("synopsis image clicked -> " + e.getX() + " / " + label.getWidth());
+      int index = e.getX() / model.metaData.getSynopsisSpan();
+      Item item = model.metaData.getItemList().get(index);
+      if (item.getType() == ItemType.FRAME) {
+        player.setCurrentFrame(item.getIndex());
+      } else {  // Image
+
+      }
     }
   }
+
 
   // stop button
   // -----------
@@ -80,6 +100,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       }
     });
   }
+
 
   // frame
   // -----
@@ -122,6 +143,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       }
     });
   }
+
 
   // sound
   // -----

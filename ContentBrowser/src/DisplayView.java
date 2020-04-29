@@ -2,10 +2,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -16,7 +20,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicLabelUI;
 import javax.swing.plaf.basic.BasicProgressBarUI;
@@ -24,6 +31,8 @@ import javax.swing.plaf.basic.BasicSliderUI;
 
 public class DisplayView extends JFrame {
 
+  // ProgressUI
+  // ----------
   private class ProgressUI extends BasicProgressBarUI {
 
     private JProgressBar jProgressBar;
@@ -45,13 +54,73 @@ public class DisplayView extends JFrame {
     }
   }
 
+
+  // SynopsisLabel
+  // -------------
+  private class SynopsisLabel extends JLabel {
+
+    private MetaData metaData;
+
+    @Override
+    protected void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      if (metaData != null) {
+        drawTypeString(g);
+      }
+    }
+
+    private void drawTypeString(Graphics g) {
+
+      Graphics2D g2d = (Graphics2D) g.create();
+
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+      g2d.setFont(new Font(null, Font.BOLD, Constants.SYNOPSIS_TEXT_SIZE));
+
+      int x = metaData.getSynopsisSpan();
+      int y = metaData.getSynopsisHeight();
+      List<Item> itemList = metaData.getItemList();
+      for (int i = 0; i < itemList.size(); ++i) {
+        ItemType type = itemList.get(i).getType();
+        int xxText = x - Constants.SYNOPSIS_TEXT_OFFSET_X;
+        int yyText = y - Constants.SYNOPSIS_TEXT_OFFSET_Y;
+        int xxRect = x - Constants.SYNOPSIS_RECT_OFFSET;
+        int yyRect = y - Constants.SYNOPSIS_RECT_OFFSET;
+
+        if (type == ItemType.FRAME) {
+          g2d.setColor(Constants.SYNOPSIS_FRAME_RECT_COLOR);
+          // g2d.fillOval(xx - 15, yy - 15, 15, 15);
+          g2d.fillRoundRect(xxRect, yyRect, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_CORNER, Constants.SYNOPSIS_RECT_CORNER);
+
+          g2d.setColor(Color.WHITE);
+          g2d.drawString("F", xxText, yyText);
+        } else {
+          g2d.setColor(Constants.SYNOPSIS_IMAGE_RECT_COLOR);
+          // g2d.fillOval(xx - 15, yy - 15, 15, 15);
+          g2d.fillRoundRect(xxRect, yyRect, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_CORNER, Constants.SYNOPSIS_RECT_CORNER);
+
+          g2d.setColor(Color.WHITE);
+          g2d.drawString("I", xxText + 2, yyText);
+        }
+        x += metaData.getSynopsisSpan();
+      }
+
+      g2d.dispose();
+    }
+
+    public void setMetaData(MetaData data) {
+      metaData = data;
+    }
+
+  }
+
   private JDialog dialog;
   private JLabel dialogLabel;
 
   private JLabel soundLabel;
   private JLabel frameLabel;
   private JLabel displayLabel;
-  private JLabel synopsisLabel;
+  private SynopsisLabel synopsisLabel;
 
   private JButton playButton;
   private JButton stopButton;
@@ -67,6 +136,7 @@ public class DisplayView extends JFrame {
   private Image dialogImage;
 
   // constructor
+  // -----------
   public DisplayView() {
     super("CSCI-576 Content Browser");
 
@@ -111,17 +181,22 @@ public class DisplayView extends JFrame {
 
     // Synopsis Panel
     // --------------
-    Dimension synopsisDimension = new Dimension(Constants.SYNOPSIS_WIDTH, Constants.SYNOPSIS_HEIGHT);
-    JPanel synopsisPanel = new JPanel();
-    synopsisLabel = new JLabel();
+    Dimension synopsisDimension = new Dimension(Constants.SYNOPSIS_WIDTH, Constants.SYNOPSIS_HEIGHT_WITH_BAR);
+    JScrollPane synopsisPanel = new JScrollPane();
+    synopsisLabel = new SynopsisLabel();
 
-    synopsisPanel.setLayout(new BorderLayout(0, 0));
     synopsisPanel.add(synopsisLabel);
+    synopsisPanel.setViewportView(synopsisLabel);
+    JScrollBar bar = synopsisPanel.getHorizontalScrollBar();
+    bar.setUnitIncrement(20);
+
+    synopsisPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
     synopsisPanel.setPreferredSize(synopsisDimension);
     synopsisPanel.setMinimumSize(synopsisDimension);
     synopsisPanel.setMaximumSize(synopsisDimension);
 
-    synopsisPanel.setBackground(Color.BLACK);
+    // synopsisPanel.setBackground(Color.ORANGE);
 
     // Add
     mainPanel.add(displayPanel, BorderLayout.NORTH);
@@ -136,6 +211,8 @@ public class DisplayView extends JFrame {
     showDialog();
   }
 
+  // initResources
+  // -------------
   private void initResources() {
     int size = Constants.BUTTON_ICON_SIZE;
     try {
@@ -149,7 +226,8 @@ public class DisplayView extends JFrame {
     }
   }
 
-
+  // addComponentsToControlPanel
+  // ---------------------------
   private void addComponentsToControlPanel(JPanel controlPanel) {
     Dimension buttonDimension = new Dimension(Constants.BUTTON_SIZE, Constants.BUTTON_SIZE);
 
@@ -205,10 +283,13 @@ public class DisplayView extends JFrame {
     controlPanel.add(soundSlider);
   }
 
+
+  // showDialog
+  // ----------
   private void showDialog() {
     dialog = new JDialog(this, "Loading", false);
     dialog.setLocationRelativeTo(this);
-    dialog.setLocation(540, 370);  // mysterious values
+    dialog.setLocation(510, 370);  // mysterious values
     dialog.setAlwaysOnTop(true);
     dialog.setSize(Constants.DIALOG_WIDTH, Constants.DIALOG_HEIGHT);
     dialog.setResizable(false);
@@ -227,6 +308,8 @@ public class DisplayView extends JFrame {
   }
 
 
+  // initListener
+  // ------------
   public void initListener(BrowserController controller) {
     // Button
     playButton.addActionListener(controller);
@@ -235,8 +318,13 @@ public class DisplayView extends JFrame {
     progressBar.addMouseListener(controller);
     // Slider
     soundSlider.addChangeListener(controller);
+    // Synopsis Label
+    synopsisLabel.addMouseListener(controller);
   }
 
+
+  // showImg
+  // -------
   public void showImg(BufferedImage img) {
     float ratio = (float) img.getWidth() / (float) img.getHeight();
     int width = (int) (ratio * Constants.DISPLAY_HEIGHT);
@@ -245,10 +333,15 @@ public class DisplayView extends JFrame {
   }
 
 
+  // setFrameLabelValues
+  // -------------------
   public void setFrameLabelValues(int current, int total) {
     frameLabel.setText(current + " / " + total);
   }
 
+
+  // setPlayButtonState
+  // ------------------
   public void setPlayButtonState(int state) {
     if (state == 0) {
       playButton.setIcon(new ImageIcon(playImage));
@@ -275,6 +368,16 @@ public class DisplayView extends JFrame {
   }
 
 
+  // Synopsis Image
+  // --------------
+  public void setSynopsisImage(BufferedImage img) {
+    synopsisLabel.setIcon(new ImageIcon(img));
+    synopsisLabel.setPreferredSize(new Dimension(img.getWidth(), Constants.SYNOPSIS_HEIGHT));
+  }
+
+  public void setSynopsisLabelMetadata(MetaData data) {
+    synopsisLabel.setMetaData(data);
+  }
 
   // Dialog
   // ------
