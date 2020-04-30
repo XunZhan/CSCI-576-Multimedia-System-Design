@@ -7,10 +7,12 @@ public class ImageItem implements Item {
     index = i;
   }
 
+  @Override
   public ItemType getType() {
     return ItemType.IMAGE;
   }
-  
+
+  @Override
   public int getIndex() {
     return index;
   }

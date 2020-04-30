@@ -58,8 +58,8 @@ public class DisplayView extends JFrame {
 
   // SynopsisLabel
   // -------------
-  private class SynopsisLabel extends JLabel {
-
+  public class SynopsisLabel extends JLabel {
+    // set [public] because we use this DisplayView.SynopsisLabel in mouseMoved in Controller
     private MetaData metaData;
     private int currentSelectedIndex = -1;
 
@@ -134,6 +134,10 @@ public class DisplayView extends JFrame {
     public void setCurrentSelectedIndex(int index) {
       currentSelectedIndex = index;
       updateUI();
+    }
+
+    public int getCurrentSelectedIndex() {
+      return currentSelectedIndex;
     }
   }
 
@@ -270,7 +274,7 @@ public class DisplayView extends JFrame {
 
     // frame label
     Dimension frameLabelDimension = new Dimension(Constants.FRAME_LABEL_WIDTH, Constants.FRAME_LABEL_HEIGHT);
-    frameLabel = new JLabel("1 / 2000");
+    frameLabel = new JLabel("1 / 1");
     frameLabel.setUI(new BasicLabelUI());
     frameLabel.setPreferredSize(frameLabelDimension);
     frameLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -327,6 +331,9 @@ public class DisplayView extends JFrame {
     dialog.add(iconLabel);
     dialog.add(dialogLabel);
 
+    // default
+    dialogLabel.setText("<html>[Synopsis]  &nbsp;No<br>[Metafile]  &nbsp;No<br>[Audio]  &nbsp;No<br>[Frame]  &nbsp;0 / 0<br>[Image]  &nbsp;0 / 0<br></html>");
+
     dialog.setVisible(true);
   }
 
@@ -339,10 +346,12 @@ public class DisplayView extends JFrame {
     stopButton.addActionListener(controller);
     // ProgressBar
     progressBar.addMouseListener(controller);
+    progressBar.addMouseMotionListener(controller);
     // Slider
     soundSlider.addChangeListener(controller);
     // Synopsis Label
     synopsisLabel.addMouseListener(controller);
+    synopsisLabel.addMouseMotionListener(controller);
   }
 
 

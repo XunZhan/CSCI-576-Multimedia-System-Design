@@ -93,11 +93,16 @@ public class Parser {
           imgSpan = Integer.parseInt(result[1]);
         } else if ("frame".equals(type)) {
           // frame
-          int index = Integer.parseInt(result[1]);
-          itemList.add(new FrameItem(index));
+          int frameNumber = Integer.parseInt(result[1]);
+          int shotStartNumber = Integer.parseInt(result[2]);
+          int shotEndNumber = Integer.parseInt(result[3]);
+          int index = frameNumber - 1;
+          int startIndex = shotStartNumber - 1;
+          int endIndex = shotEndNumber - 1;
+          itemList.add(new FrameItem(index, startIndex, endIndex));
         } else {
           // image
-          int index = Integer.parseInt(result[1]);
+          int index = Integer.parseInt(result[1]);  // it is an index that starts from 0
           String imageFileName = result[2];
           itemList.add(new ImageItem(index));
           imageFileNameList.add(imageFileName);

@@ -63,7 +63,7 @@ public class Constants {
   // progress bar
   public final static int PROGRESSBAR_WIDTH = 550;
   public final static int PROGRESSBAR_HEIGHT = 10;
-  public final static Color PROGRESSBAR_COLOR = new Color(202, 145, 52);
+  public final static Color PROGRESSBAR_COLOR = new Color(236, 162, 42);
 
   // sound slider
   public final static int SLIDER_WIDTH = 130;

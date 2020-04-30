@@ -2,14 +2,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class BrowserController implements ActionListener, ChangeListener, MouseListener {
+public class BrowserController implements ActionListener, ChangeListener, MouseListener, MouseMotionListener {
 
   private DisplayView view;
   private Model model;
@@ -75,16 +77,29 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       float percentage = (float) e.getX() / (float) progressBar.getWidth();
       int newFrame = (int) (percentage * (float) player.getNumFrame());
       // it has been tested that it won't exceed the maximum (just in case)
-      newFrame = Math.min(newFrame, (int) player.getNumFrame());
+      newFrame = Math.max(newFrame, 0);
+      newFrame = Math.min(newFrame, (int) player.getNumFrame() - 1);
       player.setCurrentFrame(newFrame);
       // update selected rect
       view.setSynopsisLabelCurrentSelectedIndex(-1);
     } else {
       // synopsis image is pressed
+      JLabel label = (JLabel) e.getSource();
+      if (e.getX() < 0 && e.getX() > label.getWidth())
+        return;
       int index = e.getX() / model.metaData.getSynopsisSpan();
       Item item = model.metaData.getItemList().get(index);
+
       if (item.getType() == ItemType.FRAME) {
-        player.setCurrentFrame(item.getIndex());
+        if (SwingUtilities.isRightMouseButton(e)) {
+          // RIGHT Pressed
+          player.setCurrentFrame(item.getIndex());
+        } else if (SwingUtilities.isLeftMouseButton(e)) {
+          // LEFT Pressed
+          System.out.println("[BrowserController] Left Clicked --> Shot Starting Frame");
+          player.setCurrentFrame(((FrameItem) item).getShotStart());
+        }
+
       } else {  // Image
         if (player.state == PlayerState.PLAYING || player.state == PlayerState.PAUSE) {
           player.stop();
@@ -97,6 +112,54 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
     }
   }
 
+  @Override
+  public void mouseDragged(MouseEvent e) {
+    // only activated when the video is paused and stop
+    if (player.state == PlayerState.PLAYING) {
+      return;
+    }
+
+    if (e.getSource().getClass() == JProgressBar.class) {
+      JProgressBar progressBar = (JProgressBar) e.getSource();
+      float percentage = (float) e.getX() / (float) progressBar.getWidth();
+      int newFrame = (int) (percentage * (float) player.getNumFrame());
+      // it has been tested that it won't exceed the maximum (just in case)
+      newFrame = Math.max(newFrame, 0);
+      newFrame = Math.min(newFrame, (int) player.getNumFrame() - 1);
+
+      player.setCurrentFrame(newFrame);
+      view.setSynopsisLabelCurrentSelectedIndex(-1);
+
+    } else if (e.getSource().getClass() == DisplayView.SynopsisLabel.class) {
+      DisplayView.SynopsisLabel label = (DisplayView.SynopsisLabel) e.getSource();
+      if (e.getX() < 0 && e.getX() > label.getWidth())
+        return;
+      int index = e.getX() / model.metaData.getSynopsisSpan();
+      // check if leftClicked
+      if (SwingUtilities.isLeftMouseButton(e) == false) {
+        return;
+      }
+      // check if it is within the current selected rectangle
+      if (index != label.getCurrentSelectedIndex()) {
+        return;
+      }
+      Item item = model.metaData.getItemList().get(index);
+      // only activated for FRAMES
+      if (item.getType() == ItemType.FRAME) {
+        FrameItem fItem = (FrameItem) item;
+        int shotStartIndex = fItem.getShotStart();  // ex. 300
+        int shotEndIndex = fItem.getShotEnd();  // ex. 360
+        int numShotFrame = shotEndIndex - shotStartIndex;  // without -1 is acceptable
+        int offsetX = e.getX() - model.metaData.getSynopsisSpan() * index;
+        float percent = (float) offsetX / (float) model.metaData.getSynopsisSpan();
+        int selectedFrame = shotStartIndex + (int) (percent * numShotFrame);
+        // double-check
+        selectedFrame = Math.max(shotStartIndex, selectedFrame);
+        selectedFrame = Math.min(shotEndIndex, selectedFrame);
+        player.setCurrentFrame(selectedFrame);
+      }
+    }
+  }
 
   // stop button
   // -----------
@@ -199,6 +262,11 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
 
   @Override
   public void mouseClicked(MouseEvent e) {
+
+  }
+
+  @Override
+  public void mouseMoved(MouseEvent e) {
 
   }
 }
