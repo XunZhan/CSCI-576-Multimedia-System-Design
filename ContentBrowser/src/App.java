@@ -12,11 +12,14 @@ public class App {
 
   public App() {
 
-    String directory = "./";  // path to the folder
-    System.out.println("[App] Directory: " + directory);
+    String rootDirectory = Constants.ROOT_DIR;
+    String testdataDirectory = Constants.TESTDATA_DIR;
+    System.out.println("[App] Root Directory: " + rootDirectory);
+    System.out.println("[App] TestData Directory: " + testdataDirectory);
 
     // Display View
     DisplayView displayView = new DisplayView();
+    displayView.initDialogView();
     // should have been on EDT thread, but here we need to use dialog label in Parser)
 
     // SwingUtilities.invokeLater(new Runnable() {
@@ -27,30 +30,36 @@ public class App {
     // });
 
     // Parser
-    Parser parser = new Parser(directory);
+    Parser parser = new Parser(rootDirectory, testdataDirectory);
     parser.setDialogLabel(displayView.getDialogLabel());
     BufferedImage synopsisImg = parser.loadSynopsis();
     MetaData metaData = parser.loadMetafile();
-    Clip clip = parser.loadAudio();
-    List<BufferedImage> frameList = parser.loadFrames();
-    List<BufferedImage> imageList = parser.loadImages(metaData.getImageFileNameList());
+    int numVideo = metaData.getNumVideo();
+    List<Clip> clipList = parser.loadAudio(numVideo);
+    List<List<BufferedImage>> frameList = parser.loadFrames(numVideo);
+    List<BufferedImage> imageList = parser.loadImages(metaData.getImageFileNameList(), numVideo);
+    System.out.println("hi");
+
+
 
     displayView.dismissDialog();
+    displayView.initDisplayView(2);
 
     // Model
-    Model model = new Model(frameList, imageList, metaData, synopsisImg);
+    Model model = new Model(null, imageList, metaData, synopsisImg);
 
     // VideoPlayer & Controller
     VideoPlayer player = new VideoPlayer();
     BrowserController controller = new BrowserController(model, displayView);
 
     player.setController(controller);
-    player.setDataSource(frameList, clip);
+    player.setDataSource(null, null);
 
     controller.setPlayer(player);
     controller.showSynopsisImage();
     controller.showSynopsisTypeText();
 
+    // display view - listeners
     displayView.initListener(controller);
 
     System.out.println("[App] Initialization Finished.");

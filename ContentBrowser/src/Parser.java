@@ -5,8 +5,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -16,11 +16,11 @@ import javax.sound.sampled.Clip;
 import javax.swing.JLabel;
 
 public class Parser {
-  private String directory;
+  private String rootDirectory;
+  private String testdataDirectory;
   private ImageReader imageReader;
 
   private JLabel dialogLabel;
-  private boolean isAudioLoaded;
   private boolean isSynopsisLoaded;
   private boolean isMetafileLoaded;
 
@@ -29,8 +29,9 @@ public class Parser {
 
   // constructor
   // -----------
-  public Parser(String dir) {
-    directory = dir;
+  public Parser(String rDir, String tDir) {
+    rootDirectory = rDir;
+    testdataDirectory = tDir;
     imageReader = new ImageReader();
   }
 
@@ -41,10 +42,10 @@ public class Parser {
   // loadSynopsis
   // ------------
   public BufferedImage loadSynopsis() {
-    System.out.print("[Parser] Loading Synopsis ...... ");
+    System.out.print("[Parser] Loading Synopsis ................ ");
     // BufferedImage img = imageReader.read(directory + Constants.SYNOPSIS_FILE);
     try {
-      BufferedImage img = ImageIO.read(new File(directory + Constants.SYNOPSIS_FILE));
+      BufferedImage img = ImageIO.read(new File(rootDirectory + Constants.SYNOPSIS_FILE));
 
       // re-scaled
       float ratio = (float) img.getHeight() / (float) Constants.SYNOPSIS_HEIGHT;
@@ -69,15 +70,16 @@ public class Parser {
   // loadMetafile
   // ------------
   public MetaData loadMetafile() {
-    System.out.print("[Parser] Loading Metafile ...... ");
+    System.out.print("[Parser] Loading Metafile ................ ");
     String fileName = Constants.META_FILE;
     List<Item> itemList = new ArrayList<>();
     List<String> imageFileNameList = new ArrayList();
     int imgWidth = 0;
     int imgHeight = 0;
     int imgSpan = 0;
+    int numVideo = 0;
 
-    try (FileReader reader = new FileReader(directory + fileName);
+    try (FileReader reader = new FileReader(rootDirectory + fileName);
          BufferedReader br = new BufferedReader(reader)
     ) {
       String line;
@@ -91,15 +93,19 @@ public class Parser {
         } else if ("span".equals(type)) {
           // line 1
           imgSpan = Integer.parseInt(result[1]);
+        } else if ("numVideo".equals(type)) {
+          // line 2
+          numVideo = Integer.parseInt(result[1]);
         } else if ("frame".equals(type)) {
           // frame
-          int frameNumber = Integer.parseInt(result[1]);
-          int shotStartNumber = Integer.parseInt(result[2]);
-          int shotEndNumber = Integer.parseInt(result[3]);
+          int videoID = Integer.parseInt(result[1]);
+          int frameNumber = Integer.parseInt(result[2]);
+          int shotStartNumber = Integer.parseInt(result[3]);
+          int shotEndNumber = Integer.parseInt(result[4]);
           int index = frameNumber - 1;
           int startIndex = shotStartNumber - 1;
           int endIndex = shotEndNumber - 1;
-          itemList.add(new FrameItem(index, startIndex, endIndex));
+          itemList.add(new FrameItem(videoID, index, startIndex, endIndex));
         } else {
           // image
           int index = Integer.parseInt(result[1]);  // it is an index that starts from 0
@@ -122,81 +128,95 @@ public class Parser {
     // re-scale
     float ratio = (float) imgHeight / (float) Constants.SYNOPSIS_HEIGHT;
 
-    return new MetaData((int) (imgWidth / ratio), Constants.SYNOPSIS_HEIGHT, (int) (imgSpan / ratio), itemList, imageFileNameList);
+    return new MetaData((int) (imgWidth / ratio), Constants.SYNOPSIS_HEIGHT, (int) (imgSpan / ratio), numVideo, itemList, imageFileNameList);
   }
 
   // loadAudio
   // ---------
-  public Clip loadAudio() {
-    System.out.print("[Parser] Loading Audio ...... ");
-    File audioFile = new File(directory + Constants.AUDIO_FILE_PATH);
-    Clip clip = null;
-    try {
-      AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-      clip = AudioSystem.getClip();
-      clip.open(audioInputStream);
-      System.out.printf("Completed (1 audio).\n");
-      isAudioLoaded = true;
-    } catch (Exception e) {
-      System.out.printf("Completed (0 audio).\n");
-      isAudioLoaded = false;
-      return null;
+  public List<Clip> loadAudio(int numVideo) {
+    System.out.print("[Parser] Loading Audios .................. ");
+
+    List<Clip> clipList = new ArrayList<>();
+
+    for (int i = 0; i < numVideo; ++i) {
+      int videoID = i + 1;
+      File audioFile = new File(rootDirectory + testdataDirectory + Constants.VIDEO_DIR + videoID + Constants.AUDIO_FILE_NAME);
+      Clip clip = null;
+      try {
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+        clip = AudioSystem.getClip();
+        clip.open(audioInputStream);
+        clipList.add(clip);
+      } catch (Exception e) {
+        System.out.printf("Completed (0 audio).\n");
+        clipList.add(null);
+      }
     }
-    return clip;
+
+    System.out.printf("Completed (" + numVideo + " audios).\n");
+
+    return clipList;
   }
+
 
   // loadFrames
   // ----------
-  public List<BufferedImage> loadFrames() {
-    // check directory
-    File dirFile = new File(directory + Constants.VIDEO_DIR);
-    if (dirFile.exists() == false) {
-      System.out.println("[Parser] The video frame directory is invalid.");
-      throw new IllegalArgumentException();
+  public List<List<BufferedImage>> loadFrames(int numVideo) {
+
+    // calculate total number of frames
+    List<String[]> fileNameList = new ArrayList<>();
+    numFrame = 0;
+    for (int i = 0; i < numVideo; ++i) {
+      int videoID = i + 1;
+      File dirFile = new File(rootDirectory + testdataDirectory + Constants.VIDEO_DIR + videoID);
+      String[] arr = dirFile.list();
+      Arrays.sort(arr);
+      numFrame += dirFile.list().length - 1;  // one audio file
+      fileNameList.add(arr);
     }
 
-    numFrame = dirFile.listFiles().length - 1;
+    List<List<BufferedImage>> frameList = new ArrayList<>();
 
-    System.out.print("[Parser] Loading Frames ...... ");
-    List<BufferedImage> videoImages = new ArrayList<>();
-    int frameIndex = 1;
-
-    DecimalFormat f = new DecimalFormat("0000");
-    while (true) {
-      String fileName = dirFile.getPath() + "/" + Constants.FRAME_FILE_PREFIX + f.format(frameIndex) + ".rgb";
-      File imgFile = new File(fileName);
-      if (imgFile.exists() == false) {
-        System.out.printf("Completed (%d frames).\n", numFrame);
-        break;
+    // load frames
+    int count = 1;
+    for (int i = 0; i < numVideo; ++i) {
+      int videoID = i + 1;
+      System.out.print("[Parser] Loading Frames for Video " + videoID + " ...... ");
+      List<BufferedImage> list = new ArrayList<>();
+      for (String s : fileNameList.get(i)) {
+        if (s.endsWith(".rgb")) {
+          String fileStr = rootDirectory + testdataDirectory + Constants.VIDEO_DIR + videoID + "/" + s;
+          BufferedImage img = imageReader.read(fileStr, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
+          list.add(img);
+          setDialogInfo(numVideo, numVideo, count, numFrame,  0, numImage);
+          ++count;
+        }
       }
-
-      setDialogInfo(frameIndex, numFrame, 0, numImage);
-      BufferedImage img = this.imageReader.read(fileName, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
-
-      videoImages.add(img);
-      ++frameIndex;
+      frameList.add(list);
+      System.out.printf("Completed (%d frames).\n", list.size());
     }
 
-    return videoImages;
+    return frameList;
   }
+
 
   // loadIamges
   // ----------
-  public List<BufferedImage> loadImages(List<String> fileNameList) {
-    File dirFile = new File(directory + Constants.IMAGE_DIR);
+  public List<BufferedImage> loadImages(List<String> fileNameList, int numVideo) {
+    File dirFile = new File(rootDirectory + testdataDirectory + Constants.IMAGE_DIR);
     if (dirFile.exists() == false) {
       System.out.println("[Parser] The image directory is invalid.");
       throw new IllegalArgumentException();
     }
 
-    System.out.print("[Parser] Loading Images ...... ");
+    System.out.print("[Parser] Loading Images .................. ");
     List<BufferedImage> imageList = new ArrayList<>();
 
     for (int i = 0; i < fileNameList.size(); ++i) {
       String fileName = dirFile.getPath() + "/" + fileNameList.get(i);
       File imgFile = new File(fileName);
 
-      setDialogInfo(numFrame, numFrame, i + 1, numImage);
+      setDialogInfo(numVideo, numVideo, numFrame, numFrame, i + 1, numImage);
 
       BufferedImage img = this.imageReader.read(fileName, Constants.IMAGE_WIDTH, Constants.IMAGE_HEIGHT);
       imageList.add(img);
@@ -206,15 +226,17 @@ public class Parser {
     return imageList;
   }
 
+
   // setDialogInfo
   // -------------
-  private void setDialogInfo(int currFrame, int totalNumFrame,
+  private void setDialogInfo(int currAudio, int totalAudio,
+                             int currFrame, int totalNumFrame,
                              int currImage, int totalNumImage) {
-    String audioStr = isAudioLoaded ? "Yes" : "No";
     String synopsisStr = isSynopsisLoaded ? "Yes" : "No";
     String metafileStr = isSynopsisLoaded ? "Yes" : "No";
-    dialogLabel.setText(String.format("<html>[Synopsis]  &nbsp;%s<br>[Metafile]  &nbsp;%s<br>[Audio]  &nbsp;%s<br>[Frame]  &nbsp;%d / %d<br>[Image]  &nbsp;%d / %d<br></html>",
-            synopsisStr, metafileStr, audioStr,
+    dialogLabel.setText(String.format("<html>[Synopsis]  &nbsp;%s<br>[Metafile]  &nbsp;%s<br>[Audio]  &nbsp;%d / %d<br>[Frame]  &nbsp;%d / %d<br>[Image]  &nbsp;%d / %d<br></html>",
+            synopsisStr, metafileStr,
+            currAudio, totalAudio,
             currFrame, totalNumFrame,
             currImage, totalNumImage));
   }

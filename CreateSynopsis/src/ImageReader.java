@@ -10,6 +10,27 @@ public class ImageReader {
 
   }
 
+  public void readRGB(String fileName, int[][][] imgRGB, int width, int height) {
+    // check fileName
+    if (fileName == null) {
+      System.out.println("[ImageReader] The file path is null.");
+      return;
+    }
+
+    File file = new File(fileName);
+    if (file.exists() == false) {
+      System.out.println("[ImageReader] The image does not exist.");
+      return;
+    }
+
+    try {
+      readImage(file, imgRGB, width, height);
+    } catch (Exception e) {
+      System.out.println("[ImageReader] Something is wrong here.");
+      return;
+    }
+  }
+
   public BufferedImage read(String fileName, int width, int height) {
     // check fileName
     if (fileName == null) {
@@ -66,7 +87,7 @@ public class ImageReader {
     }
   }
 
-  private BufferedImage generateImg(int[][][] rgbImg, int width, int height) {
+  public BufferedImage generateImg(int[][][] rgbImg, int width, int height) {
     BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
     for (int x = 0; x < Constants.IMAGE_WIDTH; ++x) {

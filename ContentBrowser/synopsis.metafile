@@ -1,15 +1,22 @@
 size 5984 288
 span 352
-frame 30 1 45
-frame 92 50 100
-frame 104 101 130
-frame 152 131 170
-frame 194 171 200
-frame 220 201 240
-frame 247 241 250
-frame 262 251 290
-frame 314 291 330
-frame 362 331 400
+numVideo 4
+frame 1 30 1 45
+frame 1 92 50 100
+frame 1 104 101 130
+frame 1 152 131 170
+frame 1 194 171 200
+frame 1 220 201 240
+frame 1 247 241 250
+frame 1 262 251 290
+frame 1 314 291 330
+frame 1 362 331 400
+frame 2 30 1 45
+frame 2 92 50 98
+frame 3 30 1 45
+frame 3 92 50 98
+frame 4 30 1 45
+frame 4 92 50 98
 image 0 image-0003.rgb
 image 1 image-0058.rgb
 image 2 image-0073.rgb

@@ -2,6 +2,8 @@ import java.util.List;
 
 public class MetaData {
 
+  private int numVideo;
+
   private int synopsisWidth;
   private int synopsisHeight;
   private int synopsisSpan;
@@ -9,10 +11,11 @@ public class MetaData {
   private List<Item> itemList;
   private List<String> imageFileNameList;
 
-  public MetaData(int w, int h, int s, List<Item> itemList, List<String> fileNameList) {
+  public MetaData(int w, int h, int s, int num, List<Item> itemList, List<String> fileNameList) {
     synopsisWidth = w;
     synopsisHeight = h;
     synopsisSpan = s;
+    numVideo = num;
     this.itemList = itemList;
     this.imageFileNameList = fileNameList;
   }
@@ -27,6 +30,10 @@ public class MetaData {
 
   public int getSynopsisSpan() {
     return synopsisSpan;
+  }
+
+  public int getNumVideo() {
+    return numVideo;
   }
 
   public List<Item> getItemList() {

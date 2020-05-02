@@ -3,9 +3,11 @@ import java.awt.Color;
 public class Constants {
   // basic info
   // ----------
+  public final static String ROOT_DIR = "./";
+  public final static String TESTDATA_DIR = "/TestData";
   public final static String VIDEO_DIR = "/video";
   public final static String IMAGE_DIR = "/image";
-  public final static String AUDIO_FILE_PATH = "/audio/sound.wav";
+  public final static String AUDIO_FILE_NAME = "/audio.wav";
   public final static String SYNOPSIS_FILE = "/synopsis.jpg";
   public final static String META_FILE = "/synopsis.metafile";
   public final static String FRAME_FILE_PREFIX = "image-";

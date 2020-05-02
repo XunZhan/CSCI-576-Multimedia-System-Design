@@ -31,4 +31,9 @@ out/
 *.avi
 
 
+ContentBrowser/TestData/
+CreateSynopsis/TestData/
+
+*.zip
+
 

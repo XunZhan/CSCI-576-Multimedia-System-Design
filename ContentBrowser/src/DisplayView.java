@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -141,6 +142,8 @@ public class DisplayView extends JFrame {
     }
   }
 
+  private JPanel mainPanel;
+
   private JDialog dialog;
   private JLabel dialogLabel;
 
@@ -151,6 +154,8 @@ public class DisplayView extends JFrame {
 
   private JButton playButton;
   private JButton stopButton;
+
+  private List<JButton> videoButtonList;
 
   private JProgressBar progressBar;
   private JSlider soundSlider;
@@ -169,18 +174,45 @@ public class DisplayView extends JFrame {
 
     initResources();
 
-    JPanel mainPanel = new JPanel();
+    mainPanel = new JPanel();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setBounds(200, 200, 0, 0);
     setPreferredSize(new Dimension(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT));
-    setResizable(false);
+    // setResizable(false);
 
     // Main Panel
     // ----------
     mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
     mainPanel.setLayout(new BorderLayout(0, 0));
+  }
 
+  // DialogView
+  // ----------
+  public void initDialogView() {
+    dialog = new JDialog(this, "Loading", false);
+    dialog.setLocationRelativeTo(this);
+    dialog.setLocation(510, 370);  // mysterious values
+    dialog.setAlwaysOnTop(true);
+    dialog.setSize(Constants.DIALOG_WIDTH, Constants.DIALOG_HEIGHT);
+    dialog.setResizable(false);
+    dialog.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+    JLabel iconLabel = new JLabel();
+    // iconLabel.setOpaque(true);
+    // iconLabel.setBackground(Color.orange);
+    iconLabel.setIcon(new ImageIcon(dialogImage));
+    dialogLabel = new JLabel();
+    // dialogLabel.setOpaque(true);
+    // dialogLabel.setBackground(Color.GRAY);
+    dialog.add(iconLabel);
+    dialog.add(dialogLabel);
 
+    // default
+    dialogLabel.setText("<html>[Synopsis]  &nbsp;No<br>[Metafile]  &nbsp;No<br>[Audio]  &nbsp;No<br>[Frame]  &nbsp;0 / 0<br>[Image]  &nbsp;0 / 0<br></html>");
+
+    dialog.setVisible(true);
+  }
+
+  public void initDisplayView(int numVideoButton) {
     // Display Panel
     // -------------
     Dimension displayDimension = new Dimension(Constants.DISPLAY_WIDTH, Constants.DISPLAY_HEIGHT);
@@ -203,7 +235,7 @@ public class DisplayView extends JFrame {
 
     JPanel controlPanel = new JPanel();
     controlPanel.setLayout(new FlowLayout());
-    addComponentsToControlPanel(controlPanel);
+    addComponentsToControlPanel(controlPanel, numVideoButton);
     // controlPanel.setBackground(Color.YELLOW);
 
     // Synopsis Panel
@@ -234,8 +266,6 @@ public class DisplayView extends JFrame {
 
     pack();
     setVisible(true);
-
-    showDialog();
   }
 
   // initResources
@@ -255,8 +285,21 @@ public class DisplayView extends JFrame {
 
   // addComponentsToControlPanel
   // ---------------------------
-  private void addComponentsToControlPanel(JPanel controlPanel) {
+  private void addComponentsToControlPanel(JPanel controlPanel, int numVideoButton) {
     Dimension buttonDimension = new Dimension(Constants.BUTTON_SIZE, Constants.BUTTON_SIZE);
+
+    videoButtonList = new ArrayList<>();
+
+    // video button
+    for (int i = 0; i < numVideoButton; ++i) {
+      JButton videoButton = new JButton();
+      videoButton.setActionCommand("VideoButton" + (i + 1));
+      videoButton.setText("" + (i + 1));
+      videoButton.setPreferredSize(buttonDimension);
+      videoButton.setSelected(false);
+      controlPanel.add(videoButton);
+      videoButtonList.add(videoButton);
+    }
 
     // play button
     playButton = new JButton();
@@ -280,7 +323,7 @@ public class DisplayView extends JFrame {
     frameLabel.setHorizontalAlignment(JLabel.CENTER);
 
     // progress bar
-    Dimension barDimension = new Dimension(Constants.PROGRESSBAR_WIDTH, Constants.PROGRESSBAR_HEIGHT);
+    Dimension barDimension = new Dimension(Constants.PROGRESSBAR_WIDTH - Constants.BUTTON_SIZE * numVideoButton, Constants.PROGRESSBAR_HEIGHT);
     progressBar = new JProgressBar();
     progressBar.setOpaque(true);
     progressBar.setUI(new ProgressUI(progressBar, Constants.PROGRESSBAR_COLOR, Color.LIGHT_GRAY));
@@ -308,33 +351,6 @@ public class DisplayView extends JFrame {
     controlPanel.add(progressBar);
     controlPanel.add(soundLabel);
     controlPanel.add(soundSlider);
-  }
-
-
-  // showDialog
-  // ----------
-  private void showDialog() {
-    dialog = new JDialog(this, "Loading", false);
-    dialog.setLocationRelativeTo(this);
-    dialog.setLocation(510, 370);  // mysterious values
-    dialog.setAlwaysOnTop(true);
-    dialog.setSize(Constants.DIALOG_WIDTH, Constants.DIALOG_HEIGHT);
-    dialog.setResizable(false);
-    dialog.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
-    JLabel iconLabel = new JLabel();
-    // iconLabel.setOpaque(true);
-    // iconLabel.setBackground(Color.orange);
-    iconLabel.setIcon(new ImageIcon(dialogImage));
-    dialogLabel = new JLabel();
-    // dialogLabel.setOpaque(true);
-    // dialogLabel.setBackground(Color.GRAY);
-    dialog.add(iconLabel);
-    dialog.add(dialogLabel);
-
-    // default
-    dialogLabel.setText("<html>[Synopsis]  &nbsp;No<br>[Metafile]  &nbsp;No<br>[Audio]  &nbsp;No<br>[Frame]  &nbsp;0 / 0<br>[Image]  &nbsp;0 / 0<br></html>");
-
-    dialog.setVisible(true);
   }
 
 
