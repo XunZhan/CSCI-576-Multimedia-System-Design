@@ -38,22 +38,19 @@ public class App {
     List<Clip> clipList = parser.loadAudio(numVideo);
     List<List<BufferedImage>> frameList = parser.loadFrames(numVideo);
     List<BufferedImage> imageList = parser.loadImages(metaData.getImageFileNameList(), numVideo);
-    System.out.println("hi");
-
-
 
     displayView.dismissDialog();
-    displayView.initDisplayView(2);
+    displayView.initDisplayView(numVideo);
 
     // Model
-    Model model = new Model(null, imageList, metaData, synopsisImg);
+    Model model = new Model(frameList, imageList, metaData, synopsisImg);
 
     // VideoPlayer & Controller
     VideoPlayer player = new VideoPlayer();
     BrowserController controller = new BrowserController(model, displayView);
 
     player.setController(controller);
-    player.setDataSource(null, null);
+    player.setDataSource(frameList, clipList);
 
     controller.setPlayer(player);
     controller.showSynopsisImage();

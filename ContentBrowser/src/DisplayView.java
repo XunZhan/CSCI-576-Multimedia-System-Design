@@ -78,7 +78,7 @@ public class DisplayView extends JFrame {
 
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-      g2d.setFont(new Font(null, Font.BOLD, Constants.SYNOPSIS_TEXT_SIZE));
+      g2d.setFont(new Font("Menlo", Font.BOLD, Constants.SYNOPSIS_TEXT_SIZE));
 
       int x = metaData.getSynopsisSpan();
       int y = metaData.getSynopsisHeight();
@@ -96,14 +96,15 @@ public class DisplayView extends JFrame {
           g2d.fillRoundRect(xxRect, yyRect, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_CORNER, Constants.SYNOPSIS_RECT_CORNER);
 
           g2d.setColor(Color.WHITE);
-          g2d.drawString("F", xxText, yyText);
+          FrameItem fItem = (FrameItem) itemList.get(i);
+          g2d.drawString(fItem.getVideoID() + "", xxText, yyText);
         } else {
           g2d.setColor(Constants.SYNOPSIS_IMAGE_RECT_COLOR);
           // g2d.fillOval(xx - 15, yy - 15, 15, 15);
           g2d.fillRoundRect(xxRect, yyRect, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_SIZE, Constants.SYNOPSIS_RECT_CORNER, Constants.SYNOPSIS_RECT_CORNER);
 
           g2d.setColor(Color.WHITE);
-          g2d.drawString("I", xxText + 1, yyText);  // lmao design
+          g2d.drawString("I", xxText, yyText);  // lmao design
         }
         x += metaData.getSynopsisSpan();
       }
@@ -170,7 +171,7 @@ public class DisplayView extends JFrame {
   // constructor
   // -----------
   public DisplayView() {
-    super("CSCI-576 Content Browser");
+    super("CSCI-576  |  Content Browser  |  Authors: Junhao Wang & Xun Zhan");
 
     initResources();
 
@@ -178,7 +179,7 @@ public class DisplayView extends JFrame {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setBounds(200, 200, 0, 0);
     setPreferredSize(new Dimension(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT));
-    // setResizable(false);
+    setResizable(false);
 
     // Main Panel
     // ----------
@@ -300,6 +301,7 @@ public class DisplayView extends JFrame {
       controlPanel.add(videoButton);
       videoButtonList.add(videoButton);
     }
+    videoButtonList.get(0).setSelected(true);
 
     // play button
     playButton = new JButton();
@@ -358,6 +360,10 @@ public class DisplayView extends JFrame {
   // ------------
   public void initListener(BrowserController controller) {
     // Button
+    for (JButton b : videoButtonList) {
+      // b.addActionListener(controller);
+      b.addMouseListener(controller);
+    }
     playButton.addActionListener(controller);
     stopButton.addActionListener(controller);
     // ProgressBar
@@ -388,7 +394,7 @@ public class DisplayView extends JFrame {
   }
 
 
-  // setPlayButtonState
+  // set button state
   // ------------------
   public void setPlayButtonState(int state) {
     if (state == 0) {
@@ -396,6 +402,13 @@ public class DisplayView extends JFrame {
     } else {
       playButton.setIcon(new ImageIcon(pauseImage));
     }
+  }
+
+  public void setVideoButtonSelected(int videoID) {
+    for (JButton b : videoButtonList) {
+      b.setSelected(false);
+    }
+    videoButtonList.get(videoID - 1).setSelected(true);
   }
 
   public void setStopButtonState() {
@@ -429,6 +442,10 @@ public class DisplayView extends JFrame {
 
   public void setSynopsisLabelCurrentSelectedIndex(int index) {
     synopsisLabel.setCurrentSelectedIndex(index);
+  }
+
+  public int getSynopsisLabelCurrentSelectedIndex() {
+    return synopsisLabel.currentSelectedIndex;
   }
 
   // Dialog

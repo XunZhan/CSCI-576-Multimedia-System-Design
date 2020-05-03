@@ -21,16 +21,26 @@ public class Main {
   public static void main(String[] args) {
     List<String> fileArray = new ArrayList<>();
     // frame
-    fileArray.add("video/image-0030.rgb");
-    fileArray.add("video/image-0092.rgb");
-    fileArray.add("video/image-0104.rgb");
-    fileArray.add("video/image-0152.rgb");
-    fileArray.add("video/image-0194.rgb");
-    fileArray.add("video/image-0220.rgb");
-    fileArray.add("video/image-0247.rgb");
-    fileArray.add("video/image-0262.rgb");
-    fileArray.add("video/image-0314.rgb");
-    fileArray.add("video/image-0362.rgb");
+    fileArray.add("video1/image-0030.rgb");
+    fileArray.add("video1/image-0092.rgb");
+    fileArray.add("video1/image-0104.rgb");
+    fileArray.add("video1/image-0152.rgb");
+    fileArray.add("video1/image-0194.rgb");
+    fileArray.add("video1/image-0220.rgb");
+    fileArray.add("video1/image-0247.rgb");
+    fileArray.add("video1/image-0262.rgb");
+    fileArray.add("video1/image-0314.rgb");
+    fileArray.add("video1/image-0362.rgb");
+
+    fileArray.add("video2/image-0030.rgb");
+    fileArray.add("video2/image-0092.rgb");
+
+    fileArray.add("video3/image-0030.rgb");
+    fileArray.add("video3/image-0092.rgb");
+
+    fileArray.add("video4/image-0030.rgb");
+    fileArray.add("video4/image-0092.rgb");
+
     // image
     fileArray.add("image/image-0003.rgb");
     fileArray.add("image/image-0058.rgb");

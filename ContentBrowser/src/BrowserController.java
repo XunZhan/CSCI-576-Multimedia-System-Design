@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
@@ -43,7 +44,17 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
   // --------
   @Override
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand() == "PlayButton") {
+    if (e.getActionCommand().equals("PlayButton")) {
+
+      int currentSelectedIndex = view.getSynopsisLabelCurrentSelectedIndex();
+
+      // deselect the rectangle when the current selection is an image
+      if (currentSelectedIndex != -1) {
+        if (model.metaData.getItemList().get(currentSelectedIndex).getType() == ItemType.IMAGE) {
+          view.setSynopsisLabelCurrentSelectedIndex(-1);
+        }
+      }
+
       if (player.state == PlayerState.STOP || player.state == player.state.PAUSE) {
         player.play();
         view.setPlayButtonState(1);
@@ -55,7 +66,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
         player.pause();
         view.setPlayButtonState(0);
       }
-    } else if (e.getActionCommand() == "StopButton") {
+    } else if (e.getActionCommand().equals("StopButton")) {
       player.stop();
       view.setPlayButtonState(0);
       // update selected rect
@@ -71,33 +82,60 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (e.getSource().getClass() == JProgressBar.class) {
-      // progressBar is pressed
+    if (e.getSource().getClass() == JButton.class) {
+      // VIDEO BUTTON
+      JButton btn = (JButton) e.getSource();
+      String command = btn.getActionCommand();
+      if (command.startsWith("VideoButton")) {
+        int videoID = Integer.parseInt(command.split("VideoButton")[1]);
+        // only when ID is different
+        if (videoID != player.getCurrentVideoID()) {
+          System.out.println("[BrowserController] Changed VideoID!");
+          player.stop();
+          view.setPlayButtonState(0);
+          view.setVideoButtonSelected(videoID);
+          player.setCurrentFrame(videoID, 0);
+        }
+      }
+
+    } else if (e.getSource().getClass() == JProgressBar.class) {
+      // PROGRESS BAR
       JProgressBar progressBar = (JProgressBar) e.getSource();
       float percentage = (float) e.getX() / (float) progressBar.getWidth();
       int newFrame = (int) (percentage * (float) player.getNumFrame());
       // it has been tested that it won't exceed the maximum (just in case)
       newFrame = Math.max(newFrame, 0);
       newFrame = Math.min(newFrame, (int) player.getNumFrame() - 1);
-      player.setCurrentFrame(newFrame);
+      player.setCurrentFrame(player.getCurrentVideoID(), newFrame);
       // update selected rect
       view.setSynopsisLabelCurrentSelectedIndex(-1);
+
     } else {
-      // synopsis image is pressed
+      // SYNOPSIS IMAGE
       JLabel label = (JLabel) e.getSource();
       if (e.getX() < 0 && e.getX() > label.getWidth())
         return;
       int index = e.getX() / model.metaData.getSynopsisSpan();
       Item item = model.metaData.getItemList().get(index);
 
+      // stop
+      if (player.state == PlayerState.PLAYING) {
+        player.stop();
+        view.setPlayButtonState(0);
+      }
+
       if (item.getType() == ItemType.FRAME) {
+
+        FrameItem fItem = (FrameItem) item;
         if (SwingUtilities.isRightMouseButton(e)) {
           // RIGHT Pressed
-          player.setCurrentFrame(item.getIndex());
+          view.setVideoButtonSelected(fItem.getVideoID());
+          player.setCurrentFrame(fItem.getVideoID(), item.getIndex());
         } else if (SwingUtilities.isLeftMouseButton(e)) {
           // LEFT Pressed
+          view.setVideoButtonSelected(fItem.getVideoID());
           System.out.println("[BrowserController] Left Clicked --> Shot Starting Frame");
-          player.setCurrentFrame(((FrameItem) item).getShotStart());
+          player.setCurrentFrame(fItem.getVideoID(), fItem.getShotStart());
         }
 
       } else {  // Image
@@ -114,23 +152,23 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    // only activated when the video is paused and stop
     if (player.state == PlayerState.PLAYING) {
       return;
     }
 
     if (e.getSource().getClass() == JProgressBar.class) {
+      // PROGRESS BAR
       JProgressBar progressBar = (JProgressBar) e.getSource();
       float percentage = (float) e.getX() / (float) progressBar.getWidth();
       int newFrame = (int) (percentage * (float) player.getNumFrame());
       // it has been tested that it won't exceed the maximum (just in case)
       newFrame = Math.max(newFrame, 0);
-      newFrame = Math.min(newFrame, (int) player.getNumFrame() - 1);
-
-      player.setCurrentFrame(newFrame);
+      newFrame = Math.min(newFrame, player.getNumFrame() - 1);
+      player.setCurrentFrame(player.getCurrentVideoID(), newFrame);
       view.setSynopsisLabelCurrentSelectedIndex(-1);
 
     } else if (e.getSource().getClass() == DisplayView.SynopsisLabel.class) {
+      // SYNOPSIS IMAGE
       DisplayView.SynopsisLabel label = (DisplayView.SynopsisLabel) e.getSource();
       if (e.getX() < 0 && e.getX() > label.getWidth())
         return;
@@ -156,7 +194,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
         // double-check
         selectedFrame = Math.max(shotStartIndex, selectedFrame);
         selectedFrame = Math.min(shotEndIndex, selectedFrame);
-        player.setCurrentFrame(selectedFrame);
+        player.setCurrentFrame(fItem.getVideoID(), selectedFrame);
       }
     }
   }
@@ -180,7 +218,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       @Override
       public void run() {
         if (model.frameList != null && model.frameList.size() > 0) {
-          view.showImg(model.frameList.get(currentFrame));
+          view.showImg(model.frameList.get(player.getCurrentVideoID() - 1).get(currentFrame));
         }
       }
     });

@@ -171,7 +171,11 @@ public class Parser {
       File dirFile = new File(rootDirectory + testdataDirectory + Constants.VIDEO_DIR + videoID);
       String[] arr = dirFile.list();
       Arrays.sort(arr);
-      numFrame += dirFile.list().length - 1;  // one audio file
+      for (String s : arr) {
+        if (s.endsWith(".rgb")) {
+          numFrame += 1;
+        }
+      }
       fileNameList.add(arr);
     }
 

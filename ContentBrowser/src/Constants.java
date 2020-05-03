@@ -10,11 +10,11 @@ public class Constants {
   public final static String AUDIO_FILE_NAME = "/audio.wav";
   public final static String SYNOPSIS_FILE = "/synopsis.jpg";
   public final static String META_FILE = "/synopsis.metafile";
-  public final static String FRAME_FILE_PREFIX = "image-";
 
   public final static double FPS = 29.94;
-  public final static int MILLISECOND_INTERVAL = (int) ((double) 1 / FPS * 1000.0);  // miliseconds
-  public final static int NANOSECOND_INTERVAL = (int) (((double) 1 / FPS * 1000.0 - 33.0) * 1000 * 1000);  // nanoseconds
+  public final static long FPS_NANOSECOND_INTERVAL = 33_400_134;
+  public final static int FPS_MILLISECOND_PART = (int) ((double) 1 / FPS * 1000.0);  // miliseconds
+  public final static int FPS_NANOSECOND_PART = (int) (((double) 1 / FPS * 1000.0 - 33.0) * 1000 * 1000);  // nanoseconds
 
   // UI stuff
   // --------
@@ -33,7 +33,7 @@ public class Constants {
   public final static int SYNOPSIS_HEIGHT_WITH_BAR = 120;
   public final static int SYNOPSIS_TEXT_OFFSET_X = 16;
   public final static int SYNOPSIS_TEXT_OFFSET_Y = 8;
-  public final static int SYNOPSIS_TEXT_SIZE = 13;
+  public final static int SYNOPSIS_TEXT_SIZE = 12;
 
   public final static int SYNOPSIS_RECT_OFFSET = 20;
   public final static int SYNOPSIS_RECT_SIZE = 15;
@@ -59,11 +59,11 @@ public class Constants {
   public final static int BUTTON_ICON_SIZE = BUTTON_SIZE - 10;
 
   // frame label
-  public final static int FRAME_LABEL_WIDTH = 70;
+  public final static int FRAME_LABEL_WIDTH = 90;
   public final static int FRAME_LABEL_HEIGHT = 20;
 
   // progress bar
-  public final static int PROGRESSBAR_WIDTH = 550;
+  public final static int PROGRESSBAR_WIDTH = 530;
   public final static int PROGRESSBAR_HEIGHT = 10;
   public final static Color PROGRESSBAR_COLOR = new Color(236, 162, 42);
 

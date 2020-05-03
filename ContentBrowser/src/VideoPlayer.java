@@ -1,5 +1,9 @@
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -11,33 +15,38 @@ enum PlayerState {
 
 public class VideoPlayer {
 
-  private List<BufferedImage> frameList;
-  private Clip audioClip;
+  private List<List<BufferedImage>> frameList;
+  private List<Clip> audioClipList;
 
-  private long numFrame;
-  private long clipLength;
+  private List<Integer> numFrameList;
+  private List<Long> clipLengthList;
 
-  private long currentFrame = 0;
+  private int currentVideoID = 1;  // 1-based
+  private int currentFrame = 0;
   private long currentClipLoc = 0;
 
   public PlayerState state = PlayerState.STOP;
 
   private BrowserController controller;
 
+  // private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
   // constructor
   public VideoPlayer() {
-
   }
 
-  public void setDataSource(List<BufferedImage> list, Clip clip) {
+  public void setDataSource(List<List<BufferedImage>> list, List<Clip> clip) {
     frameList = list;
-    audioClip = clip;
+    audioClipList = clip;
 
-    numFrame = list.size();
-    clipLength = clip.getMicrosecondLength();
+    numFrameList = new ArrayList<>();
+    clipLengthList = new ArrayList<>();
+    for (int i = 0; i < list.size(); ++i) {
+      numFrameList.add(frameList.get(i).size());
+      clipLengthList.add(audioClipList.get(i).getMicrosecondLength());
+    }
 
     // update frame label
-    controller.setupProgressBarRange((int) numFrame);
     updateFrameRelatedViews();
   }
 
@@ -45,74 +54,53 @@ public class VideoPlayer {
     this.controller = controller;
   }
 
-
   // control methods
   // ---------------
   public void play() {
+
     System.out.println("[VideoPlayer] Playing...");
 
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     // reset the currentFrame to 0 (it happens when it automatically reaches the end)
-    if (currentFrame >= numFrame) {
+    if (currentFrame >= numFrameList.get(currentVideoID - 1)) {
+      System.out.println("[VideoPlayer] Reset current frame to 0");
       currentFrame = 0;
     }
 
-    // create a new thread to play video
-    Thread thread = new Thread(new Runnable() {
+    state = PlayerState.PLAYING;
+    playAudio();
+
+    scheduler.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {
-        state = PlayerState.PLAYING;
 
-        // audio
-        playAudio();
-
-        // frames
-        long nanoError = 0;
-
-        while (currentFrame < numFrame) {
-          // for error calculation and correction
-          long t_start = System.nanoTime();
-
-          if (state == PlayerState.STOP) {
-            // test if stopped
-            stopAudio();
-            currentFrame = 0;
+        if (state == PlayerState.STOP) {
+          // STOP
+          stopAudio();
+          currentFrame = 0;
+          updateFrameRelatedViews();
+          scheduler.shutdownNow();
+        } else if (state == PlayerState.PAUSE) {
+          // PAUSE
+          pauseAudio();
+          updateFrameRelatedViews();
+          scheduler.shutdownNow();
+        } else {
+          // PLAYING
+          if (currentFrame < numFrameList.get(currentVideoID - 1)) {
             updateFrameRelatedViews();
-            return;
-          } else if (state == PlayerState.PAUSE) {
-            // test if paused
-            pauseAudio();
-            updateFrameRelatedViews();
-            return;
+            ++currentFrame;
           } else {
-            // continue
-            updateFrameRelatedViews();
+            // end of the video
+            state = PlayerState.STOP;
+            stopAudio();
+            controller.playerStopNotification();
+            scheduler.shutdownNow();
           }
-
-          long t_end = System.nanoTime();
-
-          nanoError += t_end - t_start;
-          long milli = Constants.MILLISECOND_INTERVAL;
-          if (nanoError > 10_000_000) {
-            nanoError = 0;
-            milli = Constants.MILLISECOND_INTERVAL - 10;
-          }
-          try {
-            Thread.sleep(milli, Constants.NANOSECOND_INTERVAL);
-          } catch (InterruptedException e) {
-
-          }
-
-          ++currentFrame;
         }
-
-        // end of the video
-        state = PlayerState.STOP;
-        stopAudio();
-        controller.playerStopNotification();
       }
-    }, "VideoThread");
-
-    thread.start();
+    }, 0, Constants.FPS_NANOSECOND_INTERVAL, TimeUnit.NANOSECONDS);
   }
 
   public void pause() {
@@ -134,8 +122,9 @@ public class VideoPlayer {
 
   // frame update methods
   // --------------------
-  public void setCurrentFrame(long currentFrame) {
-    System.out.println("[VideoPlayer] CurrentFrame Updated (From 1): " + (currentFrame + 1));
+  public void setCurrentFrame(int videoID, int currentFrame) {
+    System.out.println("[VideoPlayer] CurrentFrame Updated (From 1): " + (currentFrame + 1) + "  in video " + videoID);
+    this.currentVideoID = videoID;
     this.currentFrame = currentFrame;
     pauseAudio();
     updateFrameRelatedViews();
@@ -143,10 +132,10 @@ public class VideoPlayer {
     if (state == PlayerState.STOP || state == PlayerState.PAUSE) {
       if (currentFrame == 0) {
         state = PlayerState.STOP;
-      } else if (currentFrame == numFrame - 1) {
+      } else if (currentFrame == numFrameList.get(videoID - 1) - 1) {
         state = PlayerState.STOP;
         stopAudio();
-        this.currentFrame = numFrame;
+        this.currentFrame = numFrameList.get(videoID - 1);
       } else {
         state = PlayerState.PAUSE;
       }
@@ -156,14 +145,16 @@ public class VideoPlayer {
   }
 
   private void updateFrameRelatedViews() {
-    controller.updateFrameInView((int) currentFrame);
-    controller.updateFrameLabelValues((int) currentFrame, (int) numFrame);
-    controller.updateProgressBarValue((int) currentFrame);
+    controller.setupProgressBarRange(numFrameList.get(currentVideoID - 1));
+    controller.updateFrameInView(currentFrame);
+    controller.updateFrameLabelValues(currentFrame, numFrameList.get(currentVideoID - 1));
+    controller.updateProgressBarValue(currentFrame);
   }
 
   // audio methods
   // -------------
   private void playAudio() {
+    Clip audioClip = audioClipList.get(currentVideoID - 1);
     if (audioClip != null) {
       audioClip.setMicrosecondPosition(currentClipLoc);
       audioClip.start();
@@ -171,17 +162,20 @@ public class VideoPlayer {
   }
 
   private void pauseAudio() {
+    Clip audioClip = audioClipList.get(currentVideoID - 1);
     if (audioClip != null) {
       // currentClipLoc = audioClip.getMicrosecondPosition();
       // correction
-      long microSecondInterval = Constants.MILLISECOND_INTERVAL * 1000 + Constants.NANOSECOND_INTERVAL / 1000;
-      currentClipLoc = microSecondInterval * currentFrame;
+      long microSecondInterval = Constants.FPS_MILLISECOND_PART * 1000 + Constants.FPS_NANOSECOND_PART / 1000;
+      currentClipLoc = microSecondInterval * (currentFrame);
+      // System.out.println("Audio Paused at " + currentClipLoc);
 
       audioClip.stop();
     }
   }
 
   private void stopAudio() {
+    Clip audioClip = audioClipList.get(currentVideoID - 1);
     if (audioClip != null) {
       currentClipLoc = 0;
       audioClip.stop();
@@ -189,16 +183,22 @@ public class VideoPlayer {
   }
 
   public void setVolume(int level) {
-    if (audioClip != null) {
-      FloatControl gainControl = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
-      gainControl.setValue(20f * (float) Math.log10((float) level / (float) 100));
+    for (Clip audioClip : audioClipList) {
+      if (audioClip != null) {
+        FloatControl gainControl = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
+        gainControl.setValue(20f * (float) Math.log10((float) level / (float) 100));
+      }
     }
   }
 
 
   // getter
   // ------
-  public long getNumFrame() {
-    return numFrame;
+  public int getNumFrame() {
+    return numFrameList.get(currentVideoID - 1);
+  }
+
+  public int getCurrentVideoID() {
+    return currentVideoID;
   }
 }
