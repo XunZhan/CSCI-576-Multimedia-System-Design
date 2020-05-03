@@ -21,7 +21,6 @@ Main
 out/
 
 # media
-*.jpg
 *.gif
 
 *.rgb
