@@ -32,6 +32,12 @@ out/
 
 ContentBrowser/TestData/
 CreateSynopsis/TestData/
+hecate/output
+hecate/output_1
+hecate/output_2
+hecate/output_3
+hecate/output_4
+hecate/examples
 
 *.zip
 
