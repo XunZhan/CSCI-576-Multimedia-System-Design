@@ -202,6 +202,8 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
   char strbuf[256];
   bool forImg = true;
   string videoName;
+  int vid = 0;
+  string iname;
   
   string filename;
   if (basePath.substr(basePath.length()-6, 5) == "video")
@@ -228,7 +230,7 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
   
   for (int i = 0; i<(int)v_thumb_idx.size() && i<opt.njpg; i++)
   {
-    // output jpg
+    
     string readPath;
     if (!forImg)
     {
@@ -241,6 +243,21 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
     {
       readPath = readPathList[v_thumb_idx[i]];
     }
+  
+    if (opt.out_dir.empty())
+    {
+      // no need to output jpg
+      if (!forImg)
+      {
+        vid = atoi( videoName.substr(videoName.length()-1,1).c_str() );
+        frame_list.push_back(Item(FRAME, vid, frm_idx));
+      } else{
+        iname = readPath.substr(readPath.length()-14, 14);
+        image_list.push_back(Item(IMAGE, i, iname));
+      }
+      continue;
+    }
+    
     
     MyImage img;
     img.setWidth(352);
@@ -269,7 +286,7 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
       sprintf( strbuf, "%s/%s_%d_%d.jpg",
                opt.out_dir.c_str(), videoName.c_str(), frm_idx, v_cluster_id[i]);
       
-      int vid = atoi( videoName.substr(videoName.length()-1,1).c_str() );
+      vid = atoi( videoName.substr(videoName.length()-1,1).c_str() );
       frame_list.push_back(Item(FRAME, vid, frm_idx));
     } else
     {
@@ -278,7 +295,7 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
       sprintf( strbuf, "%s/%s_%s_%d.jpg",
                opt.out_dir.c_str(), "image", str_idx.c_str(), v_cluster_id[i]);
       
-      string iname = readPath.substr(readPath.length()-14, 14);
+      iname = readPath.substr(readPath.length()-14, 14);
       image_list.push_back(Item(IMAGE, i, iname));
     }
     imwrite( strbuf, frm );
