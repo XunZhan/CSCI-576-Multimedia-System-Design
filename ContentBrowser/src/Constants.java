@@ -4,7 +4,7 @@ public class Constants {
   // basic info
   // ----------
   public final static String ROOT_DIR = "../";
-  public final static String TESTDATA_DIR = "TestData1_less";
+  public final static String TESTDATA_DIR = "TestData1";
   public final static String VIDEO_DIR = "/video";
   public final static String IMAGE_DIR = "/image";
   public final static String AUDIO_FILE_NAME = "/audio.wav";
