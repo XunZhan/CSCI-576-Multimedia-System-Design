@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 
 #ifndef HECATE_ITEM_H
 #define HECATE_ITEM_H
@@ -38,12 +39,34 @@ public:
 class Generator
 {
 public:
+    std::vector<Item> frame_list;
+    std::vector<Item> image_list;
     
-    std::string testdataDir = "../TestData";  // SHOULD BE args[1]
-    std::string videoDir = "/video";
-    std::string imageDir = "/image";
+    Generator(std::string dataDir)
+    {
+      frame_list = std::vector<Item>();
+      image_list = std::vector<Item>();
+      
+      test_data_dir = dataDir;
+      video_dir = "/video";
+      image_dir = "/image";
+      synopsis_image_dir = "../synopsis.rgb";
+      synopsis_metafile_dir = "../synopsis.metafile";
+    }
+    
+private:
+    std::string test_data_dir ;
+    std::string video_dir ;
+    std::string image_dir;
+    std::string synopsis_image_dir;
+    std::string synopsis_metafile_dir;
+    
+public:
+    void generateSynopsisImage();
+    void generateMetafile();
     
 };
+
 
 
 

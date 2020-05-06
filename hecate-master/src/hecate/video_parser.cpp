@@ -42,6 +42,21 @@ void VideoParser::release_memory()
 }
 
 /*-----------------------------------------------------------------------*/
+void VideoParser::clear()
+/*-----------------------------------------------------------------------*/
+{
+  _nfrm_total = 0;
+  _nfrm_given = 0;
+   _v_frm_rgb.clear();
+  _v_frm_gray.clear();
+  _v_frm_org.clear();
+  
+  _v_shot_ranges.clear();
+  _sub_video_ranges.clear();
+  _shot_candidates.clear();
+}
+
+/*-----------------------------------------------------------------------*/
 vector<hecate::ShotRange> VideoParser::parse_video(const string& in_video,
                                                 hecate::parser_params opt)
 /*-----------------------------------------------------------------------*/

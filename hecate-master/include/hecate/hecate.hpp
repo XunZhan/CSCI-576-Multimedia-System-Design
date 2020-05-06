@@ -27,7 +27,6 @@
 #include <chrono>
 #include <limits>
 #include <numeric>
-#include "hecate/item.h"
 
 // OpenMP library
 #if defined(_OPENMP)
@@ -35,6 +34,7 @@
 #endif
 
 // Hecate headers
+#include "hecate/item.h"
 #include "hecate/sort.hpp"
 #include "hecate/time.hpp"
 #include "hecate/gapstat.hpp"
@@ -249,7 +249,7 @@ void run_hecate( hecate_params& opt,
                  vector<hecate::Range>& v_gif_range,
                  vector<hecate::Range>& v_mov_range );
 
-inline void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id, vector<Item>& frame_list, vector<Item>& image_list,) {
+inline void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id, vector<Item>& frame_list, vector<Item>& image_list) {
   vector<hecate::Range> v_gif_range, v_mov_range;
   run_hecate( opt, v_thumb_idx, v_cluster_id, frame_list, image_list, v_gif_range, v_mov_range );
 }
@@ -293,7 +293,10 @@ void detect_thumbnail_frames( hecate_params& opt,
                               vector<int>& v_thumb_idx,
                               vector<int>& v_cluster_id );
 
-void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id, const std::string& basePath = std::string() );
+
+
+void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id,
+          vector<Item>& frame_list, vector<Item>& image_list,const std::string& basePath = std::string() );
 
 vector <string> read_directory( const std::string& path = std::string() );
 

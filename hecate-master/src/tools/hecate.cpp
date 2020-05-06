@@ -8,6 +8,7 @@
  * Developer: Yale Song (yalesong@yahoo-inc.com)
  */
 
+#include "hecate/item.h"
 #include "hecate/hecate.hpp"
 
 using namespace std;
@@ -29,7 +30,9 @@ int main( int argc, char** argv )
   vector<hecate::Range> v_gif_range;
   vector<hecate::Range> v_mov_range;
   
+  Generator g = Generator(opt.in_video);
   
-  run_hecate( opt, v_thumb_idx,v_cluster_id, v_gif_range, v_mov_range );
-  
+  run_hecate( opt, v_thumb_idx,v_cluster_id, g.frame_list, g.image_list, v_gif_range, v_mov_range );
+  g.generateSynopsisImage();
+  g.generateMetafile();
 }

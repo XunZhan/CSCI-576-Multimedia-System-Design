@@ -68,7 +68,7 @@ namespace hecate {
       }
     }
     
-    printf("[%d] %f\n", f, diffSum/nPixel);
+    //printf("[%d] %f\n", f, diffSum/nPixel);
     if (diffSum/nPixel > thrsh)
       return true;
     return false;

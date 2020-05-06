@@ -197,7 +197,7 @@ void detect_thumbnail_frames( hecate_params& opt, hecate::video_metadata& meta,
 // Thumbnail generation
 //
 ////////////////////////////////////////////////////////////////////////////
-void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id,const std::string& basePath )
+void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id, vector<Item>& frame_list, vector<Item>& image_list,const std::string& basePath )
 {
   char strbuf[256];
   bool forImg = true;
@@ -261,21 +261,25 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
       frm.data[k]	= img.getImageData()[k];
     }
     
-    
 //    resize( frm, frm, Size(), rsz_ratio, rsz_ratio, CV_INTER_LINEAR );
 //    frm = frm(Rect(0,0,frm.cols-2,frm.rows));
-
 
     if (!forImg)
     {
       sprintf( strbuf, "%s/%s_%d_%d.jpg",
                opt.out_dir.c_str(), videoName.c_str(), frm_idx, v_cluster_id[i]);
+      
+      int vid = atoi( videoName.substr(videoName.length()-1,1).c_str() );
+      frame_list.push_back(Item(FRAME, vid, frm_idx));
     } else
     {
       //get origin index
       string str_idx = readPath.substr(readPath.length()-8, 4);
       sprintf( strbuf, "%s/%s_%s_%d.jpg",
                opt.out_dir.c_str(), "image", str_idx.c_str(), v_cluster_id[i]);
+      
+      string iname = readPath.substr(readPath.length()-14, 14);
+      image_list.push_back(Item(IMAGE, v_thumb_idx[i], iname));
     }
     imwrite( strbuf, frm );
     
