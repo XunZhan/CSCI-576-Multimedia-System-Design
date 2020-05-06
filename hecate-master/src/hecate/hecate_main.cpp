@@ -8,14 +8,15 @@
  * Developer: Yale Song (yalesong@yahoo-inc.com)
  */
 
+#include "hecate/item.h"
 #include "hecate/hecate.hpp"
 
 using namespace std;
 using namespace cv;
 
 void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_cluster_id,
-                 vector<hecate::Range>& v_gif_range,
-                 vector<hecate::Range>& v_mov_range)
+                 vector<Item>& frame_list, vector<Item>& image_list,
+                 vector<hecate::Range>& v_gif_range,vector<hecate::Range>& v_mov_range)
 {
 //  if( !hecate::file_exists(opt.in_video) ) {
 //    fprintf(stderr, "File not exist: %s\n", opt.in_video.c_str());
@@ -57,30 +58,37 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
   parser_opt.debug = opt.debug;
   
   // PARSE
-  if (!opt.in_video.empty())
+  
+  if (opt.in_video.empty())
   {
-    // for each video
-//    for (int i = 0; i<4; i++)
-//    {
-//
-//    }
-    parser.basePath = opt.in_video;
+    printf("Error: no input cir path\n");
+    return;
+  }
+  
+  /*-----------------------------------------------------------*/
+  // for each video dir
+  /* -----------------------------------------------------------*/
+  for (int i = 0; i<1; i++)
+  {
+    string vname = "video" + to_string(i+1);
+    parser.clear();
+    parser.basePath = opt.in_video + "/" + vname;
     
     v_thumb_idx.clear();
     v_cluster_id.clear();
     v_gif_range.clear();
     v_mov_range.clear();
     
-    v_shot_range = parser.parse_video( opt.in_video, parser_opt );
+    v_shot_range = parser.parse_video( parser.basePath, parser_opt );
     if( v_shot_range.empty() ) {
       fprintf(stderr, "run_hecate: Failed to parse the video\n");
       return;
     }
-  
+    
     histo_features = parser.get_frame_features();
     diff_features  = parser.get_frame_diff_features();
     opt.step_sz    = parser.get_effective_step_size();
-  
+    
     // If video is shorter than desired summary length
     if( opt.mov && opt.lmov >= parser.meta.duration ) {
       fprintf( stderr, "run_hecate: Video duration is %.2f seconds, "
@@ -89,7 +97,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
                parser.meta.duration, (double)opt.lmov);
       opt.mov = false;
     }
-  
+    
     // Check desired resolution of output
     if( opt.jpg_width_px<0 || opt.jpg_width_px > parser.meta.width ) {
       //fprintf( stderr, "run_hecate: Forcing jpg_width_px to %d\n",parser.meta.width);
@@ -103,18 +111,18 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
       //fprintf( stderr, "run_hecate: Forcing mov_width_px to %d\n",parser.meta.width);
       opt.mov_width_px = parser.meta.width;
     }
-  
+    
     if( opt.debug ) {
       hecate::print_elapsed_time( t0, "run_hecate" );
       //hecate::print_video_metadata( opt.in_video, parser.meta );
     }
-  
+    
     ////////////////////////////////////////////////////////////////////////////
     //
     // Analyze video
     //
     ////////////////////////////////////////////////////////////////////////////
-  
+    
     // Print shot info
     if( opt.info_shot ) {
       printf("shots: ");
@@ -125,7 +133,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
       }
       printf("\n");
     }
-  
+    
     // Print keyframe indices
     if( opt.info_keyfrm ) {
       vector<int> keyfrms;
@@ -134,7 +142,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
           keyfrms.push_back(v_shot_range[i].v_idx[j]);
         }
       }
-    
+      
       printf("keyframes: [");
       for(size_t i=0; i<keyfrms.size(); i++) {
         printf("%d", keyfrms[i]);
@@ -143,23 +151,23 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
       }
       printf("]\n");
     }
-  
+    
     // Thumbnail extraction module
     if( opt.jpg ) {
       if( opt.debug ) {
         printf("run_hecate: Video keyframe detection\n");
         t0 = hecate::Clock::now();
       }
-    
+      
       detect_thumbnail_frames( opt, parser.meta, v_shot_range,
                                histo_features, diff_features,
                                v_thumb_idx, v_cluster_id);
-    
+      
       if( opt.debug ) {
         hecate::print_elapsed_time( t0, "run_hecate" );
       }
     }
-  
+    
     // Print debugging info
     if( opt.debug ) {
       if( opt.jpg ) {
@@ -169,40 +177,41 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
         printf("]\n");
       }
     }
-  
-    // Produce results
-    if( opt.jpg ) {
-      //generate_thumbnails( opt, v_thumb_idx,v_cluster_id);
-      generate_thumbnails( opt, v_thumb_idx,v_cluster_id, parser.basePath);
-    }
-  
-  
-  }
-  if (opt.in_photo.empty())
-  {
-    v_thumb_idx.clear();
-    v_cluster_id.clear();
-    v_gif_range.clear();
-    v_mov_range.clear();
-    parser.basePath = opt.in_photo;
     
-    parser.parse_photo( opt.in_photo, parser_opt, v_thumb_idx, v_cluster_id);
-  
-    // Print debugging info
-    if( opt.debug ) {
-      if( opt.jpg ) {
-        printf("hecate: photo thumbnail indices: [ ");
-        for(size_t i=0; i<v_thumb_idx.size(); i++)
-          printf("%d ", v_thumb_idx[i]);
-        printf("]\n");
-      }
-    }
-  
     // Produce results
     if( opt.jpg ) {
       //generate_thumbnails( opt, v_thumb_idx,v_cluster_id);
-      generate_thumbnails( opt, v_thumb_idx,v_cluster_id, parser.basePath);
+      generate_thumbnails( opt, v_thumb_idx,v_cluster_id, frame_list, image_list, parser.basePath);
     }
+  }
+  
+  
+  /*-----------------------------------------------------------*/
+  // for image dir
+  /* -----------------------------------------------------------*/
+  v_thumb_idx.clear();
+  v_cluster_id.clear();
+  v_gif_range.clear();
+  v_mov_range.clear();
+  opt.in_photo = opt.in_video + "/image";
+  parser.basePath = opt.in_photo;
+  
+  parser.parse_photo( opt.in_photo, parser_opt, v_thumb_idx, v_cluster_id);
+  
+  // Print debugging info
+  if( opt.debug ) {
+    if( opt.jpg ) {
+      printf("hecate: photo thumbnail indices: [ ");
+      for(size_t i=0; i<v_thumb_idx.size(); i++)
+        printf("%d ", v_thumb_idx[i]);
+      printf("]\n");
+    }
+  }
+  
+  // Produce results
+  if( opt.jpg ) {
+    //generate_thumbnails( opt, v_thumb_idx,v_cluster_id);
+    generate_thumbnails( opt, v_thumb_idx,v_cluster_id,frame_list, image_list, parser.basePath);
   }
   
 }

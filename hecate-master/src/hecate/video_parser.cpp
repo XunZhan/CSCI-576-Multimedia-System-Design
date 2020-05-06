@@ -42,6 +42,21 @@ void VideoParser::release_memory()
 }
 
 /*-----------------------------------------------------------------------*/
+void VideoParser::clear()
+/*-----------------------------------------------------------------------*/
+{
+  _nfrm_total = 0;
+  _nfrm_given = 0;
+   _v_frm_rgb.clear();
+  _v_frm_gray.clear();
+  _v_frm_org.clear();
+  
+  _v_shot_ranges.clear();
+  _sub_video_ranges.clear();
+  _shot_candidates.clear();
+}
+
+/*-----------------------------------------------------------------------*/
 vector<hecate::ShotRange> VideoParser::parse_video(const string& in_video,
                                                 hecate::parser_params opt)
 /*-----------------------------------------------------------------------*/
@@ -455,9 +470,9 @@ void VideoParser::filter_heuristic(int fltr_begin_nfrms, int fltr_end_nfrms)
 /*-----------------------------------------------------------------------*/
 {
   for(int i=0; i<fltr_begin_nfrms; i++)
-    mark_invalid(_v_frm_valid, _v_frm_log, i, "[Begin]");
-  for(int i=0; i<fltr_end_nfrms; i++)
-    mark_invalid(_v_frm_valid, _v_frm_log, _nfrm_total-1-i, "[End]");
+    _v_frm_valid[i] =  false;
+  for(int i=_v_frm_valid.size()-1; i>fltr_end_nfrms; i++)
+    _v_frm_valid[i] = true;
 }
 
 

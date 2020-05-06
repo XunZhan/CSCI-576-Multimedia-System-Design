@@ -216,6 +216,9 @@ namespace hecate {
     vector<hecate::ShotRange> _v_shot_ranges;
     vector<hecate::ShotRange> _sub_video_ranges;
     vector<hecate::ShotRange> _shot_candidates;
+    
+  public:
+    void clear();
   };
 }
 

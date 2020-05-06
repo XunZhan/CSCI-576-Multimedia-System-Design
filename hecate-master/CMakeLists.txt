@@ -10,6 +10,7 @@ include_directories(include)
 
 add_executable(CreateSynopsisImage
         src/hecate/gflseg.cpp
+        src/hecate/item.cpp
         src/hecate/hecate_highlight.cpp
         src/hecate/hecate_main.cpp
         src/hecate/hecate_thumbnail.cpp

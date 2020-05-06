@@ -44,7 +44,7 @@ public:
 	// operator overload
 	MyImage & operator= (const MyImage & otherImage);
 
-	// Reader & Writer functions
+  // Reader & Writer functions
 	void	setWidth( const int w)  { Width = w; }; 
 	void	setHeight(const int h) { Height = h; }; 
 	void	setImageData( const unsigned char *img ) { Data = (unsigned char *)img; };
@@ -53,6 +53,24 @@ public:
 	int		getHeight() { return Height; };
 	unsigned char*	getImageData() { return Data; };
 	char*	getImagePath() { return ImagePath; }
+
+  void initData()
+  {
+    if (!Data)
+    {
+      Data = new unsigned char[Width*Height*3];
+    }
+  }
+
+	void setDataAt(unsigned char ch, long index)
+	{
+	  Data[index] = ch;
+	}
+
+	unsigned char getDataAt(long index) const
+	{
+	  return Data[index];
+	}
 
 	// Input Output operations
 	bool	ReadImage();
