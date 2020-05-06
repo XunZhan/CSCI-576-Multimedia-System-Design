@@ -81,23 +81,29 @@ vector<hecate::ShotRange> VideoParser::parse_video(const string& in_video,
   // Split into subVideo
   split_into_subVideo();
   _v_frm_org.clear();
+  int a = get_nfrm_valid();
   
   if( opt.fltr_lq )
     filter_low_quality();
+  a = get_nfrm_valid();
   
   filter_transition();
+  a = get_nfrm_valid();
   
   // Extract feature representation
   extract_histo_features();
+  a = get_nfrm_valid();
   
   for (int i = 0; i<_sub_video_ranges.size(); i++)
   {
     // Frame filtering
     filter_heuristic(_sub_video_ranges[i].start, _sub_video_ranges[i].end);
+    a = get_nfrm_valid();
   
     // Post-process (break up shots if too long)
     double min_shot_len_sec = 2.0;
     post_process(min_shot_len_sec, opt.gfl);
+    a = get_nfrm_valid();
   
     // Store shot information
     update_shot_ranges();
@@ -470,9 +476,9 @@ void VideoParser::filter_heuristic(int fltr_begin_nfrms, int fltr_end_nfrms)
 /*-----------------------------------------------------------------------*/
 {
   for(int i=0; i<fltr_begin_nfrms; i++)
-    mark_invalid(_v_frm_valid, _v_frm_log, i, "[Begin]");
-  for(int i=0; i<fltr_end_nfrms; i++)
-    mark_invalid(_v_frm_valid, _v_frm_log, _nfrm_total-1-i, "[End]");
+    _v_frm_valid[i] =  false;
+  for(int i=_v_frm_valid.size()-1; i>fltr_end_nfrms; i++)
+    _v_frm_valid[i] = true;
 }
 
 
