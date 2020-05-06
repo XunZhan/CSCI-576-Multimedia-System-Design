@@ -8,9 +8,9 @@
 
 ## Project Introduction
 
-![](https://bloggg-1254259681.cos.na-siliconvalley.myqcloud.com/lbika.jpg)
-
 The course project is meant to give you an in-depth understanding of some of the areas in multimedia technology. Since this is a broad field, there can be a variety interesting projects that can be done depending on your interests which can also extend to related and complementary topics that are taught in class.
+
+![](https://bloggg-1254259681.cos.na-siliconvalley.myqcloud.com/lbika.jpg)
 
 In this project you will implement a media synopsis algorithm that produces a `synopsis image` summarizing media content. Synopsis is an ancient Greek word that means "general view" or a "summary view". As input you will take a path to a folder that contains various visual media elements – video (with audio) and images. Normally all these media elements at one location (folder, http address) should be contextual similar eg video and images of a personal event such as vacation, graduation, wedding. The synopsis image should give you a good flavor and representation of all the media content. Furthermore, you are also tasked to create an interactive player that can interact with this “synopsis” image so that when you click on some location of the synopsis image, this will trigger the corresponding video to play (with audio synchronized) from that contextual location or show the corresponding image.
 
@@ -22,8 +22,8 @@ In this project you will implement a media synopsis algorithm that produces a `s
 
 Input to your Process: A folder `TestData` that contains
 
-- **Step 1:** Several video folders that contain `.rgb` files in `CIF` format (352 x 288) and a corresponding audio file in `.wav` format, synced to video
-- **Step 2:** An `image` folder that contains `.rgb` files in `CIF` format (352 x 288)
+- Several video folders that contain `.rgb` files in `CIF` format (352 x 288) and a corresponding audio file in `.wav` format, synced to video
+- An `image` folder that contains `.rgb` files in `CIF` format (352 x 288)
 
 ### Expected Outputs
 
