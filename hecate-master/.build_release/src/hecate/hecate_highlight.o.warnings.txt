@@ -1,0 +1,85 @@
+In file included from src/hecate/hecate_highlight.cpp:11:
+In file included from ./include/hecate/hecate.hpp:41:
+./include/hecate/cc_parser.hpp:69:60: warning: 'bind1st<std::__1::not_equal_to<char>, char>' is deprecated [-Wdeprecated-declarations]
+    dst.erase(dst.begin(), find_if(dst.begin(), dst.end(), bind1st(not_equal_to<char>(), ' ')));
+                                                           ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional:1056:1: note: 'bind1st<std::__1::not_equal_to<char>, char>' has been explicitly marked deprecated here
+_LIBCPP_DEPRECATED_IN_CXX11 inline _LIBCPP_INLINE_VISIBILITY
+^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1054:39: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+#  define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+                                      ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1043:48: note: expanded from macro '_LIBCPP_DEPRECATED'
+#    define _LIBCPP_DEPRECATED __attribute__ ((deprecated))
+                                               ^
+In file included from src/hecate/hecate_highlight.cpp:11:
+In file included from ./include/hecate/hecate.hpp:41:
+./include/hecate/cc_parser.hpp:70:49: warning: 'bind1st<std::__1::not_equal_to<char>, char>' is deprecated [-Wdeprecated-declarations]
+    dst.erase(find_if(dst.rbegin(), dst.rend(), bind1st(not_equal_to<char>(), ' ')).base(), dst.end());
+                                                ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional:1056:1: note: 'bind1st<std::__1::not_equal_to<char>, char>' has been explicitly marked deprecated here
+_LIBCPP_DEPRECATED_IN_CXX11 inline _LIBCPP_INLINE_VISIBILITY
+^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1054:39: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+#  define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+                                      ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1043:48: note: expanded from macro '_LIBCPP_DEPRECATED'
+#    define _LIBCPP_DEPRECATED __attribute__ ((deprecated))
+                                               ^
+In file included from src/hecate/hecate_highlight.cpp:11:
+In file included from ./include/hecate/hecate.hpp:41:
+./include/hecate/cc_parser.hpp:126:60: warning: 'bind1st<std::__1::not_equal_to<char>, char>' is deprecated [-Wdeprecated-declarations]
+    dst.erase(dst.begin(), find_if(dst.begin(), dst.end(), bind1st(not_equal_to<char>(), ' ')));
+                                                           ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional:1056:1: note: 'bind1st<std::__1::not_equal_to<char>, char>' has been explicitly marked deprecated here
+_LIBCPP_DEPRECATED_IN_CXX11 inline _LIBCPP_INLINE_VISIBILITY
+^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1054:39: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+#  define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+                                      ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1043:48: note: expanded from macro '_LIBCPP_DEPRECATED'
+#    define _LIBCPP_DEPRECATED __attribute__ ((deprecated))
+                                               ^
+In file included from src/hecate/hecate_highlight.cpp:11:
+In file included from ./include/hecate/hecate.hpp:41:
+./include/hecate/cc_parser.hpp:127:49: warning: 'bind1st<std::__1::not_equal_to<char>, char>' is deprecated [-Wdeprecated-declarations]
+    dst.erase(find_if(dst.rbegin(), dst.rend(), bind1st(not_equal_to<char>(), ' ')).base(), dst.end());
+                                                ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional:1056:1: note: 'bind1st<std::__1::not_equal_to<char>, char>' has been explicitly marked deprecated here
+_LIBCPP_DEPRECATED_IN_CXX11 inline _LIBCPP_INLINE_VISIBILITY
+^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1054:39: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+#  define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+                                      ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1043:48: note: expanded from macro '_LIBCPP_DEPRECATED'
+#    define _LIBCPP_DEPRECATED __attribute__ ((deprecated))
+                                               ^
+In file included from src/hecate/hecate_highlight.cpp:11:
+In file included from ./include/hecate/hecate.hpp:42:
+./include/hecate/file_helper.hpp:78:72: warning: 'ptr_fun<int, int>' is deprecated [-Wdeprecated-declarations]
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+                                                                       ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional:1100:1: note: 'ptr_fun<int, int>' has been explicitly marked deprecated here
+_LIBCPP_DEPRECATED_IN_CXX11 inline _LIBCPP_INLINE_VISIBILITY
+^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1054:39: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+#  define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+                                      ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1043:48: note: expanded from macro '_LIBCPP_DEPRECATED'
+#    define _LIBCPP_DEPRECATED __attribute__ ((deprecated))
+                                               ^
+In file included from src/hecate/hecate_highlight.cpp:11:
+In file included from ./include/hecate/hecate.hpp:42:
+./include/hecate/file_helper.hpp:83:63: warning: 'ptr_fun<int, int>' is deprecated [-Wdeprecated-declarations]
+    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+                                                              ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/functional:1100:1: note: 'ptr_fun<int, int>' has been explicitly marked deprecated here
+_LIBCPP_DEPRECATED_IN_CXX11 inline _LIBCPP_INLINE_VISIBILITY
+^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1054:39: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+#  define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+                                      ^
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:1043:48: note: expanded from macro '_LIBCPP_DEPRECATED'
+#    define _LIBCPP_DEPRECATED __attribute__ ((deprecated))
+                                               ^
+6 warnings generated.
