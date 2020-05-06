@@ -279,7 +279,7 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
                opt.out_dir.c_str(), "image", str_idx.c_str(), v_cluster_id[i]);
       
       string iname = readPath.substr(readPath.length()-14, 14);
-      image_list.push_back(Item(IMAGE, v_thumb_idx[i], iname));
+      image_list.push_back(Item(IMAGE, i, iname));
     }
     imwrite( strbuf, frm );
     
