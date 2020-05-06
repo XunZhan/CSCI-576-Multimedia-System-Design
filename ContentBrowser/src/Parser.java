@@ -100,12 +100,12 @@ public class Parser {
           // frame
           int videoID = Integer.parseInt(result[1]);
           int frameNumber = Integer.parseInt(result[2]);
-          int shotStartNumber = Integer.parseInt(result[3]);
-          int shotEndNumber = Integer.parseInt(result[4]);
+          // int shotStartNumber = Integer.parseInt(result[3]);
+          // int shotEndNumber = Integer.parseInt(result[4]);
           int index = frameNumber - 1;
-          int startIndex = shotStartNumber - 1;
-          int endIndex = shotEndNumber - 1;
-          itemList.add(new FrameItem(videoID, index, startIndex, endIndex));
+          // int startIndex = shotStartNumber - 1;
+          // int endIndex = shotEndNumber - 1;
+          itemList.add(new FrameItem(videoID, index, 0, 0));
         } else {
           // image
           int index = Integer.parseInt(result[1]);  // it is an index that starts from 0

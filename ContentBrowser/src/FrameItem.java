@@ -27,11 +27,11 @@ public class FrameItem implements Item {
     return index;
   }
 
-  public int getShotStart() {
-    return shotStart;
-  }
-
-  public int getShotEnd() {
-    return shotEnd;
-  }
+  // public int getShotStart() {
+  //   return shotStart;
+  // }
+  //
+  // public int getShotEnd() {
+  //   return shotEnd;
+  // }
 }

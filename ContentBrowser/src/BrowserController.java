@@ -105,8 +105,20 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       int newFrame = (int) (percentage * (float) player.getNumFrame());
       // it has been tested that it won't exceed the maximum (just in case)
       newFrame = Math.max(newFrame, 0);
-      newFrame = Math.min(newFrame, (int) player.getNumFrame() - 1);
-      player.setCurrentFrame(player.getCurrentVideoID(), newFrame);
+      newFrame = Math.min(newFrame, player.getNumFrame() - 1);
+      if (player.state == PlayerState.PLAYING) {
+        // for audio synchronization
+        player.pause();
+        try {
+          Thread.sleep(200);
+        } catch (InterruptedException ie) {
+
+        }
+        player.setCurrentFrame(player.getCurrentVideoID(), newFrame);
+        player.play();
+      } else {
+        player.setCurrentFrame(player.getCurrentVideoID(), newFrame);
+      }
       // update selected rect
       view.setSynopsisLabelCurrentSelectedIndex(-1);
 
@@ -127,16 +139,16 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       if (item.getType() == ItemType.FRAME) {
 
         FrameItem fItem = (FrameItem) item;
-        if (SwingUtilities.isRightMouseButton(e)) {
-          // RIGHT Pressed
-          view.setVideoButtonSelected(fItem.getVideoID());
-          player.setCurrentFrame(fItem.getVideoID(), item.getIndex());
-        } else if (SwingUtilities.isLeftMouseButton(e)) {
-          // LEFT Pressed
-          view.setVideoButtonSelected(fItem.getVideoID());
-          System.out.println("[BrowserController] Left Clicked --> Shot Starting Frame");
-          player.setCurrentFrame(fItem.getVideoID(), fItem.getShotStart());
-        }
+        // if (SwingUtilities.isRightMouseButton(e)) {
+        //   // RIGHT Pressed
+        view.setVideoButtonSelected(fItem.getVideoID());
+        player.setCurrentFrame(fItem.getVideoID(), item.getIndex());
+        // } else if (SwingUtilities.isLeftMouseButton(e)) {
+        //   // LEFT Pressed
+        //   view.setVideoButtonSelected(fItem.getVideoID());
+        //   System.out.println("[BrowserController] Left Clicked --> Shot Starting Frame");
+        //   player.setCurrentFrame(fItem.getVideoID(), fItem.getShotStart());
+        // }
 
       } else {  // Image
         if (player.state == PlayerState.PLAYING || player.state == PlayerState.PAUSE) {
@@ -174,7 +186,7 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
         return;
       int index = e.getX() / model.metaData.getSynopsisSpan();
       // check if leftClicked
-      if (SwingUtilities.isLeftMouseButton(e) == false) {
+      if (SwingUtilities.isRightMouseButton(e) == false) {
         return;
       }
       // check if it is within the current selected rectangle
@@ -185,15 +197,18 @@ public class BrowserController implements ActionListener, ChangeListener, MouseL
       // only activated for FRAMES
       if (item.getType() == ItemType.FRAME) {
         FrameItem fItem = (FrameItem) item;
-        int shotStartIndex = fItem.getShotStart();  // ex. 300
-        int shotEndIndex = fItem.getShotEnd();  // ex. 360
-        int numShotFrame = shotEndIndex - shotStartIndex;  // without -1 is acceptable
+        int startIndex = fItem.getIndex() - Constants.BROWSING_OFFSET;
+        int endIndex = fItem.getIndex() + Constants.BROWSING_OFFSET;
+        startIndex = Math.max(startIndex, 0);
+        endIndex = Math.min(endIndex, model.frameList.get(fItem.getVideoID() - 1).size() - 1);
+
+        int numFrame = endIndex - startIndex;  // without -1 is acceptable
         int offsetX = e.getX() - model.metaData.getSynopsisSpan() * index;
         float percent = (float) offsetX / (float) model.metaData.getSynopsisSpan();
-        int selectedFrame = shotStartIndex + (int) (percent * numShotFrame);
+        int selectedFrame = startIndex + (int) (percent * numFrame);
         // double-check
-        selectedFrame = Math.max(shotStartIndex, selectedFrame);
-        selectedFrame = Math.min(shotEndIndex, selectedFrame);
+        selectedFrame = Math.max(startIndex, selectedFrame);
+        selectedFrame = Math.min(endIndex, selectedFrame);
         player.setCurrentFrame(fItem.getVideoID(), selectedFrame);
       }
     }

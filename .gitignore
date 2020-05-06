@@ -30,8 +30,12 @@ out/
 *.avi
 
 
-ContentBrowser/TestData/
-CreateSynopsis/TestData/
+TestData
+TestData1
+
+synopsis.jpg
+synopsis.metafile
+
 hecate/output
 hecate/output_1
 hecate/output_2

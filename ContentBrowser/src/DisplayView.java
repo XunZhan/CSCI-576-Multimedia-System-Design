@@ -119,9 +119,9 @@ public class DisplayView extends JFrame {
         // g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(Constants.SYNOPSIS_SELECTED_RECT_THICKNESS));
         g2d.drawRoundRect(
-                metaData.getSynopsisSpan() * currentSelectedIndex + 1,
+                metaData.getSynopsisSpan() * currentSelectedIndex + 2,
                 1,
-                metaData.getSynopsisSpan(),
+                metaData.getSynopsisSpan() + 2,
                 metaData.getSynopsisHeight() - 3, Constants.SYNOPSIS_SELECTED_RECT_CORNER, Constants.SYNOPSIS_SELECTED_RECT_CORNER);
       }
 
@@ -171,7 +171,7 @@ public class DisplayView extends JFrame {
   // constructor
   // -----------
   public DisplayView() {
-    super("CSCI-576  |  Content Browser  |  Authors: Junhao Wang & Xun Zhan");
+    super("CSCI-576  |  Explore Synopsis  |  " + Constants.TESTDATA_DIR + "  |  Authors: Junhao Wang & Xun Zhan");
 
     initResources();
 
@@ -185,6 +185,8 @@ public class DisplayView extends JFrame {
     // ----------
     mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
     mainPanel.setLayout(new BorderLayout(0, 0));
+    // mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+    // mainPanel.setLayout(new BorderLayout(0, 5));
   }
 
   // DialogView

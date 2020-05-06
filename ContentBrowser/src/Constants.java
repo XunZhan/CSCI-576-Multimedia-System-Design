@@ -3,14 +3,15 @@ import java.awt.Color;
 public class Constants {
   // basic info
   // ----------
-  public final static String ROOT_DIR = "./";
-  public final static String TESTDATA_DIR = "/TestData";
+  public final static String ROOT_DIR = "../";
+  public final static String TESTDATA_DIR = "TestData1";
   public final static String VIDEO_DIR = "/video";
   public final static String IMAGE_DIR = "/image";
   public final static String AUDIO_FILE_NAME = "/audio.wav";
   public final static String SYNOPSIS_FILE = "/synopsis.jpg";
   public final static String META_FILE = "/synopsis.metafile";
 
+  public final static int BROWSING_OFFSET = 100;
   public final static double FPS = 29.94;
   public final static long FPS_NANOSECOND_INTERVAL = 33_400_134;
   public final static int FPS_MILLISECOND_PART = (int) ((double) 1 / FPS * 1000.0);  // miliseconds

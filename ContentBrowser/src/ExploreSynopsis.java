@@ -3,31 +3,24 @@ import java.util.List;
 
 import javax.sound.sampled.Clip;
 
-public class App {
+public class ExploreSynopsis {
 
   // main
   public static void main(String[] args) {
-    new App();
+    new ExploreSynopsis();
   }
 
-  public App() {
+  public ExploreSynopsis() {
 
     String rootDirectory = Constants.ROOT_DIR;
     String testdataDirectory = Constants.TESTDATA_DIR;
-    System.out.println("[App] Root Directory: " + rootDirectory);
-    System.out.println("[App] TestData Directory: " + testdataDirectory);
+    System.out.println("[Explore Synopsis] Root Directory: " + rootDirectory);
+    System.out.println("[Explore Synopsis] TestData Directory: " + testdataDirectory);
 
     // Display View
     DisplayView displayView = new DisplayView();
     displayView.initDialogView();
     // should have been on EDT thread, but here we need to use dialog label in Parser)
-
-    // SwingUtilities.invokeLater(new Runnable() {
-    //   @Override
-    //   public void run() {
-    //     displayView = new DisplayView();
-      // }
-    // });
 
     // Parser
     Parser parser = new Parser(rootDirectory, testdataDirectory);
@@ -59,7 +52,7 @@ public class App {
     // display view - listeners
     displayView.initListener(controller);
 
-    System.out.println("[App] Initialization Finished.");
+    System.out.println("[Explore Synopsis] Initialization Finished.");
   }
 
 }
