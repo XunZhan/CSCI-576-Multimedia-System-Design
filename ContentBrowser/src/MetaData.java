@@ -4,6 +4,9 @@ public class MetaData {
 
   private int numVideo;
 
+  private int synopsisOriginalWidth;
+  private int synopsisOriginalHeight;
+
   private int synopsisWidth;
   private int synopsisHeight;
   private int synopsisSpan;
@@ -11,13 +14,23 @@ public class MetaData {
   private List<Item> itemList;
   private List<String> imageFileNameList;
 
-  public MetaData(int w, int h, int s, int num, List<Item> itemList, List<String> fileNameList) {
+  public MetaData(int ow, int oh, int w, int h, int s, int num, List<Item> itemList, List<String> fileNameList) {
+    synopsisOriginalWidth = ow;
+    synopsisOriginalHeight = oh;
     synopsisWidth = w;
     synopsisHeight = h;
     synopsisSpan = s;
     numVideo = num;
     this.itemList = itemList;
     this.imageFileNameList = fileNameList;
+  }
+
+  public int getSynopsisOriginalWidth() {
+    return synopsisOriginalWidth;
+  }
+
+  public int getSynopsisOriginalHeight() {
+    return synopsisOriginalHeight;
   }
 
   public int getSynopsisWidth() {

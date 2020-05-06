@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -39,33 +38,6 @@ public class Parser {
     dialogLabel = label;
   }
 
-  // loadSynopsis
-  // ------------
-  public BufferedImage loadSynopsis() {
-    System.out.print("[Parser] Loading Synopsis ................ ");
-    // BufferedImage img = imageReader.read(directory + Constants.SYNOPSIS_FILE);
-    try {
-      BufferedImage img = ImageIO.read(new File(rootDirectory + Constants.SYNOPSIS_FILE));
-
-      // re-scaled
-      float ratio = (float) img.getHeight() / (float) Constants.SYNOPSIS_HEIGHT;
-      Image ig = img.getScaledInstance((int) (img.getWidth() / ratio), Constants.SYNOPSIS_HEIGHT, Image.SCALE_SMOOTH);
-
-      BufferedImage scaledImg = new BufferedImage(ig.getWidth(null), ig.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-      Graphics2D graphics2D = scaledImg.createGraphics();
-      graphics2D.drawImage(ig, 0, 0, null);
-      graphics2D.dispose();
-
-      System.out.printf("Completed (1 synopsis).\n");
-      isSynopsisLoaded = true;
-      return scaledImg;
-    } catch (IOException e) {
-      System.out.printf("Completed (0 synopsis).\n");
-      System.out.println("[Parser] Exception in Loading Synopsis Image.");
-      return null;
-    }
-  }
 
   // loadMetafile
   // ------------
@@ -128,8 +100,38 @@ public class Parser {
     // re-scale
     float ratio = (float) imgHeight / (float) Constants.SYNOPSIS_HEIGHT;
 
-    return new MetaData((int) (imgWidth / ratio), Constants.SYNOPSIS_HEIGHT, (int) (imgSpan / ratio), numVideo, itemList, imageFileNameList);
+    return new MetaData(imgWidth, imgHeight, (int) (imgWidth / ratio), Constants.SYNOPSIS_HEIGHT, (int) (imgSpan / ratio), numVideo, itemList, imageFileNameList);
   }
+
+
+  // loadSynopsis
+  // ------------
+  public BufferedImage loadSynopsis(String filePath, int width, int height) {
+    System.out.print("[Parser] Loading Synopsis ................ ");
+
+    BufferedImage img = imageReader.read(filePath, width, height);
+
+    if (img == null) {
+      System.out.printf("Completed (0 synopsis).\n");
+      System.out.println("[Parser] Exception in Loading Synopsis Image.");
+      return null;
+    }
+
+    // re-scaled
+    float ratio = (float) img.getHeight() / (float) Constants.SYNOPSIS_HEIGHT;
+    Image ig = img.getScaledInstance((int) (img.getWidth() / ratio), Constants.SYNOPSIS_HEIGHT, Image.SCALE_SMOOTH);
+
+    BufferedImage scaledImg = new BufferedImage(ig.getWidth(null), ig.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+    Graphics2D graphics2D = scaledImg.createGraphics();
+    graphics2D.drawImage(ig, 0, 0, null);
+    graphics2D.dispose();
+
+    System.out.printf("Completed (1 synopsis).\n");
+    isSynopsisLoaded = true;
+    return scaledImg;
+  }
+
 
   // loadAudio
   // ---------

@@ -7,10 +7,14 @@ public class ExploreSynopsis {
 
   // main
   public static void main(String[] args) {
-    new ExploreSynopsis();
+    if (args.length != 1) {
+      System.out.println("[Explore Synopsis] Invalid Argument.");
+      return;
+    }
+    new ExploreSynopsis(args);
   }
 
-  public ExploreSynopsis() {
+  public ExploreSynopsis(String[] args) {
 
     String rootDirectory = Constants.ROOT_DIR;
     String testdataDirectory = Constants.TESTDATA_DIR;
@@ -25,8 +29,8 @@ public class ExploreSynopsis {
     // Parser
     Parser parser = new Parser(rootDirectory, testdataDirectory);
     parser.setDialogLabel(displayView.getDialogLabel());
-    BufferedImage synopsisImg = parser.loadSynopsis();
     MetaData metaData = parser.loadMetafile();
+    BufferedImage synopsisImg = parser.loadSynopsis(args[0], metaData.getSynopsisOriginalWidth(), metaData.getSynopsisOriginalHeight());
     int numVideo = metaData.getNumVideo();
     List<Clip> clipList = parser.loadAudio(numVideo);
     List<List<BufferedImage>> frameList = parser.loadFrames(numVideo);

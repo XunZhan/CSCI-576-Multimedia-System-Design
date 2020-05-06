@@ -69,8 +69,8 @@ public class ImageReader {
   private BufferedImage generateImg(int[][][] rgbImg, int width, int height) {
     BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-    for (int x = 0; x < Constants.IMAGE_WIDTH; ++x) {
-      for (int y = 0; y < Constants.IMAGE_HEIGHT; ++y) {
+    for (int x = 0; x < width; ++x) {
+      for (int y = 0; y < height; ++y) {
         int r = rgbImg[x][y][0];
         int g = rgbImg[x][y][1];
         int b = rgbImg[x][y][2];
