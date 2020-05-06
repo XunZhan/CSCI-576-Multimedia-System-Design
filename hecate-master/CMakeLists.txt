@@ -15,6 +15,7 @@ add_executable(CreateSynopsisImage
         src/hecate/hecate_thumbnail.cpp
         src/hecate/video_parser.cpp
         src/tools/hecate.cpp
-        src/hecate/Image.cpp)
+        src/hecate/Image.cpp
+        src/hecate/item.cpp)
 
 target_link_libraries(CreateSynopsisImage ${OpenCV_LIBS})

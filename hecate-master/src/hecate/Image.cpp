@@ -37,11 +37,7 @@ MyImage::MyImage( MyImage *otherImage)
 	{
 		Data[i]	= otherImage->Data[i];
 	}
-
-
 }
-
-
 
 // = operator overload
 MyImage & MyImage::operator= (const MyImage &otherImage)
@@ -58,7 +54,6 @@ MyImage & MyImage::operator= (const MyImage &otherImage)
 	return *this;
 
 }
-
 
 // MyImage::ReadImage
 // Function to read the image given a path
@@ -102,7 +97,10 @@ bool MyImage::ReadImage()
 	}
 	
 	// Allocate Data structure and copy
-	Data = new unsigned char[Width*Height*3];
+  if (!Data)
+  {
+    Data = new unsigned char[Width * Height * 3];
+  }
 	for (i = 0; i < Height*Width; i++)
 	{
 		Data[3*i]	= Bbuf[i];

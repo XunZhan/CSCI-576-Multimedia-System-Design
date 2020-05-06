@@ -28,6 +28,8 @@ int main( int argc, char** argv )
   vector<int> v_cluster_id;
   vector<hecate::Range> v_gif_range;
   vector<hecate::Range> v_mov_range;
+  
+  
   run_hecate( opt, v_thumb_idx,v_cluster_id, v_gif_range, v_mov_range );
   
 }

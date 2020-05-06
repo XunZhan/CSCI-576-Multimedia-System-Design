@@ -27,6 +27,7 @@
 #include <chrono>
 #include <limits>
 #include <numeric>
+#include "hecate/item.h"
 
 // OpenMP library
 #if defined(_OPENMP)
@@ -243,23 +244,27 @@ inline void hecate_usage()
 void run_hecate( hecate_params& opt,
                  vector<int>& v_thumb_idx,
                  vector<int>& v_cluster_id,
+                 vector<Item>& frame_list,
+                 vector<Item>& image_list,
                  vector<hecate::Range>& v_gif_range,
                  vector<hecate::Range>& v_mov_range );
 
-inline void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id) {
+inline void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>& v_cluster_id, vector<Item>& frame_list, vector<Item>& image_list,) {
   vector<hecate::Range> v_gif_range, v_mov_range;
-  run_hecate( opt, v_thumb_idx, v_cluster_id,v_gif_range, v_mov_range );
+  run_hecate( opt, v_thumb_idx, v_cluster_id, frame_list, image_list, v_gif_range, v_mov_range );
 }
 
 inline void run_hecate( hecate_params& opt, vector<hecate::Range>& v_range) {
   vector<int> v_thumb_idx;
   vector<int> v_cluster_id;
+  vector<Item> frame_list;
+  vector<Item> image_list;
   vector<hecate::Range> v_xxx_range;
   
   if( opt.gif )
-    run_hecate( opt, v_thumb_idx, v_cluster_id, v_range, v_xxx_range );
+    run_hecate( opt, v_thumb_idx, v_cluster_id, frame_list, image_list,v_range, v_xxx_range );
   else if( opt.mov )
-    run_hecate( opt, v_thumb_idx, v_cluster_id,v_xxx_range, v_range );
+    run_hecate( opt, v_thumb_idx, v_cluster_id,frame_list, image_list,v_xxx_range, v_range );
 }
 
 
