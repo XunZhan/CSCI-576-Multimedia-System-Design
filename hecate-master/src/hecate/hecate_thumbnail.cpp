@@ -229,12 +229,14 @@ void generate_thumbnails( hecate_params& opt, vector<int>& v_thumb_idx, vector<i
     readPathList = read_directory(basePath);
   }
   
-  for (int i = 0; i<(int)v_thumb_idx.size() && i<opt.njpg; i++)
+  for (int i = 0; i<(int)v_thumb_idx.size(); i++)
   {
     
     string readPath;
     if (!forImg)
     {
+      if (i >= opt.njpg)
+        break;
       frm_idx = v_thumb_idx[i]+1;
       string s = to_string(frm_idx);
       string ss = string(4 - s.length(), '0') + s;

@@ -840,8 +840,8 @@ void VideoParser::update_shot_ranges( int min_shot_len )
     // exit the current shot area
     if( sb0>=0 && sb1>=0 && (!_v_frm_valid[i] || i+1==_nfrm_given) )
     {
-      hecate::ShotRange r( sb0+1, sb1-1 );
-      if( r.length()>min_shot_len - 2 ) {
+      hecate::ShotRange r( sb0+2, sb1-2 );
+      if( r.length()>min_shot_len - 4 ) {
         _v_shot_ranges.push_back( r );
       }
       else {
