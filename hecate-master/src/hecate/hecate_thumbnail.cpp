@@ -100,6 +100,7 @@ void detect_thumbnail_frames( hecate_params& opt, hecate::video_metadata& meta,
       X.row(v_valid_frm_idx[i]).copyTo( km_data.row(i) );
     }
     
+    printf("clustering:\n");
     // Perform k-means (repeat 5 times)
     Mat km_lbl; // integer row vector; stores cluster IDs for every sample.
     Mat km_ctr; // one row per each cluster center.

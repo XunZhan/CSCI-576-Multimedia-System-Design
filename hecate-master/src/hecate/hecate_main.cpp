@@ -70,6 +70,10 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
   /* -----------------------------------------------------------*/
   for (int i = 0; i<1; i++)
   {
+    printf("----------------------------------------------------\n");
+    printf("-                     Video %d                     -\n", i+1);
+    printf("----------------------------------------------------\n");
+    
     string vname = "video" + to_string(i+1);
     parser.clear();
     parser.basePath = opt.in_video + "/" + vname;
@@ -124,7 +128,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
     ////////////////////////////////////////////////////////////////////////////
     
     // Print shot info
-    if( opt.info_shot ) {
+    //if( opt.info_shot ) {
       printf("shots: ");
       for(size_t i=0; i<v_shot_range.size(); i++) {
         printf("[%d:%d]", v_shot_range[i].start, v_shot_range[i].end);
@@ -132,7 +136,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
           printf(",");
       }
       printf("\n");
-    }
+    //}
     
     // Print keyframe indices
     if( opt.info_keyfrm ) {
@@ -169,14 +173,14 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
     }
     
     // Print debugging info
-    if( opt.debug ) {
-      if( opt.jpg ) {
+    //if( opt.debug ) {
+    //  if( opt.jpg ) {
         printf("hecate: video thumbnail indices: [ ");
         for(size_t i=0; i<v_thumb_idx.size(); i++)
           printf("%d ", v_thumb_idx[i]);
         printf("]\n");
-      }
-    }
+    //  }
+    //}
     
     // Produce results
     if( opt.jpg ) {
@@ -189,6 +193,11 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
   /*-----------------------------------------------------------*/
   // for image dir
   /* -----------------------------------------------------------*/
+  
+  printf("---------------------------------------------------\n");
+  printf("-                      Image                      -\n");
+  printf("----------------------------------------------------\n");
+  
   v_thumb_idx.clear();
   v_cluster_id.clear();
   v_gif_range.clear();
@@ -199,14 +208,14 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
   parser.parse_photo( opt.in_photo, parser_opt, v_thumb_idx, v_cluster_id);
   
   // Print debugging info
-  if( opt.debug ) {
-    if( opt.jpg ) {
+  //if( opt.debug ) {
+    //if( opt.jpg ) {
       printf("hecate: photo thumbnail indices: [ ");
       for(size_t i=0; i<v_thumb_idx.size(); i++)
         printf("%d ", v_thumb_idx[i]);
       printf("]\n");
-    }
-  }
+//    }
+//  }
   
   // Produce results
   if( opt.jpg ) {
