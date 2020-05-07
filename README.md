@@ -70,4 +70,5 @@ input folder. This image will a visual representation of all the "important" par
 - [Video Tapestries with Continuous Temporal Zoom](http://www.cs.princeton.edu/gfx/pubs/Barnes_2010_VTW/index.php)
 - [Summarizing Visual Data Using Bidirectional Similarity](http://www.wisdom.weizmann.ac.il/~vision/VisualSummary.html)
 - [PatchMatch: A Randomized Correspondence Algorithm for Structural Image Editing](https://gfx.cs.princeton.edu/pubs/Barnes_2009_PAR/index.php)
+- [To Click or Not To Click: Automatic Selection of Beautiful Thumbnails from Videos](https://arxiv.org/abs/1609.01388)
 - [yahoo/hecate](https://github.com/yahoo/hecate)
