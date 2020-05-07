@@ -124,8 +124,11 @@ void Generator::generateSynopsisImage()
   }
   
   // blur
+
   std::cout << "[Synopsis Image] Blurring ..." << "\n";
-  unsigned char temp[synopsis_width * synopsis_height * 3];
+  // unsigned char temp[synopsis_width * synopsis_height * 3];
+  unsigned char* temp = new unsigned char[synopsis_width * synopsis_height * 3];
+
   for (long i = 0; i < synopsis_width * synopsis_height * 3; ++i)
   {
     temp[i] = synopsis_img.getDataAt(i);
@@ -192,7 +195,9 @@ void Generator::generateSynopsisImage()
       }
     }
   }
-  
+
+  delete [] temp;
+
   synopsis_img.setImagePath(synopsis_image_dir.c_str());
   synopsis_img.WriteImage();
   

@@ -70,9 +70,9 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
 //  /* -----------------------------------------------------------*/
   for (int i = 0; i<4; i++)
   {
-    printf("----------------------------------------------------\n");
+    printf("---------------------------------------------------\n");
     printf("-                     Video %d                     -\n", i+1);
-    printf("----------------------------------------------------\n");
+    printf("---------------------------------------------------\n");
 
     string vname = "video" + to_string(i+1);
     parser.clear();
@@ -193,7 +193,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
   
   printf("---------------------------------------------------\n");
   printf("-                      Image                      -\n");
-  printf("----------------------------------------------------\n");
+  printf("---------------------------------------------------\n");
   
   v_thumb_idx.clear();
   v_cluster_id.clear();
