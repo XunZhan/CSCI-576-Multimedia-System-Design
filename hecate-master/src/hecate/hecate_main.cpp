@@ -68,7 +68,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
   /*-----------------------------------------------------------*/
   // for each video dir
   /* -----------------------------------------------------------*/
-  for (int i = 0; i<1; i++)
+  for (int i = 0; i<4; i++)
   {
     string vname = "video" + to_string(i+1);
     parser.clear();
