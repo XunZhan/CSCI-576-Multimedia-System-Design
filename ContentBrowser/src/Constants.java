@@ -12,8 +12,8 @@ public class Constants {
   public final static String META_FILE = "/synopsis.metafile";
 
   public final static int BROWSING_OFFSET = 100;
-  public final static double FPS = 29.94;
-  public final static long FPS_NANOSECOND_INTERVAL = 33_400_134;
+  public final static double FPS = 29.97;
+  public final static long FPS_NANOSECOND_INTERVAL = 33_366_700;
   public final static int FPS_MILLISECOND_PART = (int) ((double) 1 / FPS * 1000.0);  // miliseconds
   public final static int FPS_NANOSECOND_PART = (int) (((double) 1 / FPS * 1000.0 - 33.0) * 1000 * 1000);  // nanoseconds
 
