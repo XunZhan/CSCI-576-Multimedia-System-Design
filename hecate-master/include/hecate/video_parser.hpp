@@ -211,11 +211,11 @@ namespace hecate {
     
     vector<Mat> _v_frm_rgb;       // rgb frames
     vector<Mat> _v_frm_gray;      // gray-scale frames
-    vector<Mat> _v_frm_org;
+   // vector<Mat> _v_frm_org;
     
     vector<hecate::ShotRange> _v_shot_ranges;
-    vector<hecate::ShotRange> _sub_video_ranges;
-    vector<hecate::ShotRange> _shot_candidates;
+//    vector<hecate::ShotRange> _sub_video_ranges;
+//    vector<hecate::ShotRange> _shot_candidates;
     
   public:
     void clear();

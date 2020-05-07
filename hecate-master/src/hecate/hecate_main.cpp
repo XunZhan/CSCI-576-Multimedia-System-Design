@@ -157,7 +157,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
     }
     
     // Thumbnail extraction module
-    if( opt.jpg ) {
+    //if( opt.jpg ) {
       if( opt.debug ) {
         printf("run_hecate: Video keyframe detection\n");
         t0 = hecate::Clock::now();
@@ -170,23 +170,20 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
       if( opt.debug ) {
         hecate::print_elapsed_time( t0, "run_hecate" );
       }
-    }
+    //}
     
     // Print debugging info
     //if( opt.debug ) {
-    //  if( opt.jpg ) {
+      if( opt.jpg ) {
         printf("hecate: video thumbnail indices: [ ");
         for(size_t i=0; i<v_thumb_idx.size(); i++)
           printf("%d ", v_thumb_idx[i]);
         printf("]\n");
-    //  }
+      }
     //}
     
     // Produce results
-    if( opt.jpg ) {
-      //generate_thumbnails( opt, v_thumb_idx,v_cluster_id);
-      generate_thumbnails( opt, v_thumb_idx,v_cluster_id, frame_list, image_list, parser.basePath);
-    }
+    generate_thumbnails( opt, v_thumb_idx,v_cluster_id, frame_list, image_list, parser.basePath);
   }
   
   
@@ -218,10 +215,7 @@ void run_hecate( hecate_params& opt, vector<int>& v_thumb_idx, vector<int>&v_clu
 //  }
   
   // Produce results
-  if( opt.jpg ) {
-    //generate_thumbnails( opt, v_thumb_idx,v_cluster_id);
-    generate_thumbnails( opt, v_thumb_idx,v_cluster_id,frame_list, image_list, parser.basePath);
-  }
+  generate_thumbnails( opt, v_thumb_idx,v_cluster_id,frame_list, image_list, parser.basePath);
   
 }
 

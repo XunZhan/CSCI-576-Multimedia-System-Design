@@ -49,11 +49,8 @@ void VideoParser::clear()
   _nfrm_given = 0;
    _v_frm_rgb.clear();
   _v_frm_gray.clear();
-  _v_frm_org.clear();
   
   _v_shot_ranges.clear();
-  _sub_video_ranges.clear();
-  _shot_candidates.clear();
 }
 
 /*-----------------------------------------------------------------------*/
@@ -63,6 +60,7 @@ vector<hecate::ShotRange> VideoParser::parse_video(const string& in_video,
 {
   _debug = opt.debug;
   
+  printf("loading frames\n");
   int ret = read_video( in_video, opt.step_sz, opt.max_duration,
                        opt.ignore_rest );
   if( ret<0 ) {
@@ -79,8 +77,8 @@ vector<hecate::ShotRange> VideoParser::parse_video(const string& in_video,
   meta.duration = _video_sec;
   
   // Split into subVideo
-  split_into_subVideo();
-  _v_frm_org.clear();
+//  split_into_subVideo();
+//  _v_frm_org.clear();
   
   if( opt.fltr_lq )
     filter_low_quality();
@@ -90,25 +88,18 @@ vector<hecate::ShotRange> VideoParser::parse_video(const string& in_video,
   // Extract feature representation
   extract_histo_features();
   
-  for (int i = 0; i<_sub_video_ranges.size(); i++)
-  {
-    // Frame filtering
-    filter_heuristic(_sub_video_ranges[i].start, _sub_video_ranges[i].end);
+  // Post-process (break up shots if too long)
+  printf("calculating shots\n");
+  double min_shot_len_sec = 2.0;
+  post_process(min_shot_len_sec, opt.gfl);
   
-    // Post-process (break up shots if too long)
-    double min_shot_len_sec = 2.0;
-    post_process(min_shot_len_sec, opt.gfl);
+  // Store shot information
+  update_shot_ranges();
   
-    // Store shot information
-    update_shot_ranges();
+  // Subshot detection; subshot info is stored during this step
+  if( opt.fltr_rdt )
+    filter_redundant_and_obtain_subshots();
   
-    // Subshot detection; subshot info is stored during this step
-    if( opt.fltr_rdt )
-      filter_redundant_and_obtain_subshots();
-    
-    for (int k = 0; k<_v_shot_ranges.size(); k++)
-      _shot_candidates.push_back(_v_shot_ranges[k]);
-  }
   release_memory();
   
   if( _display )
@@ -124,8 +115,7 @@ vector<hecate::ShotRange> VideoParser::parse_video(const string& in_video,
 //  }
   
   // Produce result
-  //return _v_shot_ranges;
-  return _shot_candidates;
+  return _v_shot_ranges;
 }
 
 void VideoParser::parse_photo(const string& in_photo, hecate::parser_params opt,
@@ -226,10 +216,11 @@ int VideoParser::read_video( const string& in_video, int step_sz,
 
   vector<string> s = read_directory(in_video);
   
-//  VideoWriter outputVideo;
-//  int codec = VideoWriter::fourcc('M', 'P', '4', '2');
-//  // Open the output
-//  outputVideo.open("/Users/xun/Downloads/StudentsUse_Dataset_Armenia/video.mp4", codec, 29.97, Size(352,288), true);
+  VideoWriter outputVideo;
+  int codec = VideoWriter::fourcc('M', 'P', '4', '2');
+  // Open the output
+//  string pp = in_video + ".mp4";
+//  outputVideo.open(pp , codec, 29.97, Size(352,288), true);
 //  if (!outputVideo.isOpened())
 //  {
 //    cout  << "Could not open the output video for write" << endl;
@@ -300,7 +291,7 @@ int VideoParser::read_video( const string& in_video, int step_sz,
     {
       frm_org.data[kk]	= img.getImageData()[kk];
     }
-    //outputVideo<<frm_org;
+//    outputVideo<<frm_org;
     Mat frm;
 
 //    vr >> frm_org;
@@ -310,7 +301,7 @@ int VideoParser::read_video( const string& in_video, int step_sz,
       if( rsz_ratio>0 )
         resize( frm_org, frm, Size(), rsz_ratio, rsz_ratio, CV_INTER_LINEAR );
       _v_frm_rgb.push_back( frm );
-      _v_frm_org.push_back( frm_org );
+      //_v_frm_org.push_back( frm_org );
 
       // if video is too long, and ignore_rest is true, cut the rest
       if( ignore_rest && _nfrm_total>=max_nfrms ) {
@@ -320,12 +311,12 @@ int VideoParser::read_video( const string& in_video, int step_sz,
         break;
       }
     }
+    
     frm_org.release();
     frm.release();
     _nfrm_total++;
 
   }
-
   //vr.release();
   _nfrm_given = (int) _v_frm_rgb.size();
   _video_sec  = (double)_nfrm_total/_video_fps;
@@ -424,30 +415,30 @@ int VideoParser::read_photo( const string& in_photo, int step_sz,
  ------------------------------------------------------------------------*/
 void VideoParser::split_into_subVideo(int min_shot_len)
 {
-  vector<bool> v_difference(_nfrm_given-1,0.0);
-  for( int i=0; i<_nfrm_given-1; i++ ) {
-    v_difference[i]  = hecate::calc_difference(i, _v_frm_org[i],_v_frm_org[i+1], 40);
-  }
-  _sub_video_ranges.clear();
-  int start_idx = -1;
-  for( int i=0; i<_nfrm_given; i++ ) {
-    if (start_idx < 0)
-      start_idx = i;
-    else{
-      if (i == _nfrm_given-1 || (!v_difference[i] && v_difference[i+1])) // end of sub video
-      {
-        hecate::ShotRange r( start_idx, i );
-        if (r.length() > min_shot_len)
-        {
-          _sub_video_ranges.push_back(r);
-  
-          if( _debug )
-            printf("[%d, %d]  ",start_idx, i);
-          start_idx = -1;
-        }
-      }
-    }
-  }
+//  vector<bool> v_difference(_nfrm_given-1,0.0);
+//  for( int i=0; i<_nfrm_given-1; i++ ) {
+//    v_difference[i]  = hecate::calc_difference(i, _v_frm_org[i],_v_frm_org[i+1], 40);
+//  }
+//  _sub_video_ranges.clear();
+//  int start_idx = -1;
+//  for( int i=0; i<_nfrm_given; i++ ) {
+//    if (start_idx < 0)
+//      start_idx = i;
+//    else{
+//      if (i == _nfrm_given-1 || (!v_difference[i] && v_difference[i+1])) // end of sub video
+//      {
+//        hecate::ShotRange r( start_idx, i );
+//        if (r.length() > min_shot_len)
+//        {
+//          _sub_video_ranges.push_back(r);
+//
+//          if( _debug )
+//            printf("[%d, %d]  ",start_idx, i);
+//          start_idx = -1;
+//        }
+//      }
+//    }
+//  }
 }
 
 
