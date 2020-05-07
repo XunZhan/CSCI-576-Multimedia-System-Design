@@ -119,7 +119,7 @@ public class DisplayView extends JFrame {
         // g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(Constants.SYNOPSIS_SELECTED_RECT_THICKNESS));
         g2d.drawRoundRect(
-                metaData.getSynopsisSpan() * currentSelectedIndex + 2,
+                metaData.getSynopsisSpan() * currentSelectedIndex + currentSelectedIndex / 10,
                 1,
                 metaData.getSynopsisSpan() + 2,
                 metaData.getSynopsisHeight() - 3, Constants.SYNOPSIS_SELECTED_RECT_CORNER, Constants.SYNOPSIS_SELECTED_RECT_CORNER);
