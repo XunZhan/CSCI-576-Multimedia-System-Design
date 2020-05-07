@@ -4,7 +4,9 @@ public class Constants {
   // basic info
   // ----------
   public final static String ROOT_DIR = "../";
-  public final static String TESTDATA_DIR = "TestData1_less";
+  // public final static String TESTDATA_DIR = "TestData";
+  public final static String TESTDATA_DIR = "TestDataDay1";
+  // public final static String TESTDATA_DIR = "TestDataDay2";
   public final static String VIDEO_DIR = "/video";
   public final static String IMAGE_DIR = "/image";
   public final static String AUDIO_FILE_NAME = "/audio.wav";
@@ -12,8 +14,8 @@ public class Constants {
   public final static String META_FILE = "/synopsis.metafile";
 
   public final static int BROWSING_OFFSET = 100;
-  public final static double FPS = 29.94;
-  public final static long FPS_NANOSECOND_INTERVAL = 33_400_134;
+  public final static double FPS = 29.97;
+  public final static long FPS_NANOSECOND_INTERVAL = 33_366_700;
   public final static int FPS_MILLISECOND_PART = (int) ((double) 1 / FPS * 1000.0);  // miliseconds
   public final static int FPS_NANOSECOND_PART = (int) (((double) 1 / FPS * 1000.0 - 33.0) * 1000 * 1000);  // nanoseconds
 
