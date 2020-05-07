@@ -167,7 +167,7 @@ void VideoParser::parse_photo(const string& in_photo, hecate::parser_params opt,
   //
   // Perform k-means
   //int ncluster = min(nfrm_valid/2, (int)_v_shot_ranges.size());
-  int ncluster = 5;
+  int ncluster = 10;
   Mat km_lbl; // integer row vector; stores cluster IDs for every sample.
   Mat km_ctr; // One row per each cluster center.
   hecate::perform_kmeans( km_data, km_lbl, km_ctr, ncluster );
@@ -840,8 +840,8 @@ void VideoParser::update_shot_ranges( int min_shot_len )
     // exit the current shot area
     if( sb0>=0 && sb1>=0 && (!_v_frm_valid[i] || i+1==_nfrm_given) )
     {
-      hecate::ShotRange r( sb0, sb1 );
-      if( r.length()>min_shot_len ) {
+      hecate::ShotRange r( sb0+1, sb1-1 );
+      if( r.length()>min_shot_len - 2 ) {
         _v_shot_ranges.push_back( r );
       }
       else {
