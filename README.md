@@ -49,8 +49,7 @@ input folder. This image will a visual representation of all the "important" par
 ## Our Work
 
 Demo:  
-[https://youtu.be/zcrOm8Byh_g](https://youtu.be/zcrOm8Byh_g)
-<iframe height="350" src="https://youtu.be/zcrOm8Byh_g" frameborder="0" allowfullscreen></iframe>
+[https://youtu.be/zcrOm8Byh_g](https://youtu.be/zcrOm8Byh_g)  
 
 ```sh
 [Explore Synopsis] Root Directory: ../
